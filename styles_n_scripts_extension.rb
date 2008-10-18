@@ -6,7 +6,7 @@ include CustomSettings
 
 
 class StylesNScriptsExtension < Radiant::Extension
-  version "0.3"
+  version "0.3.1"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
 
@@ -18,6 +18,7 @@ class StylesNScriptsExtension < Radiant::Extension
       controller.stylesheet_edit    'admin/css/edit/:id',     :action => 'edit'
       controller.stylesheet_new     'admin/css/new',          :action => 'new'
       controller.stylesheet_remove  'admin/css/remove/:id',   :action => 'remove'  
+      controller.stylesheet_upload  'admin/css/upload',       :action => 'upload'  
     end
     
     # Admin javascript Routes
@@ -26,6 +27,7 @@ class StylesNScriptsExtension < Radiant::Extension
       controller.javascript_edit    'admin/js/edit/:id',     :action => 'edit'
       controller.javascript_new     'admin/js/new',          :action => 'new'
       controller.javascript_remove  'admin/js/remove/:id',   :action => 'remove'  
+      controller.javascript_upload  'admin/js/upload',       :action => 'upload'  
     end
 
     # Public side routes (for JS and CSS directories)

@@ -25,7 +25,7 @@ class TextAsset < ActiveRecord::Base
 
 
   def url
-    StylesNScripts::Config["#{self.class.to_s.underscore}_directory"] +
+    "/" + StylesNScripts::Config["#{self.class.to_s.underscore}_directory"] +
         "/" + self.filename
   end
 

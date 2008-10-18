@@ -1,0 +1,29 @@
+- if model_name == 'stylesheet'
+  %h1 Stylesheets
+  %p Cascading Stylesheets (CSS files) can be used to alter the look &amp; feel of your pages, layouts, and/or snippets.
+- elsif model_name == 'javascript'
+  %h1 Javascripts
+  %p Javascripts add dynamic behaviors that can be used within your pages, layouts, and/or snippets.
+
+%table.index{:id => model_name, :cellspacing => 0, :border => 0, :cellpadding => 0}
+  %thead
+    %tr
+      %th{:class => model_name}
+        = proper_model_name
+      %th.modify Modify
+  %tbody
+    - unless @text_assets.empty?
+      - @text_assets.each do |text_asset|
+        %tr.node.level-1
+          -# this next class is dumb but Radiant hard coded for the Snippet class so we'll just piggyback on that...
+          %td.snippet 
+            = image(model_name, :alt => "#{model_name}-icon", :title => text_asset.url)
+            %span= link_to(text_asset.filename, send("#{model_name}_edit_url", :id => text_asset), :title => text_asset.url)
+          %td.remove
+            = link_to image('remove', :alt => "Remove #{proper_model_name}"), send("#{model_name}_remove_url", :id => text_asset)
+    - else
+      %tr
+        %td.note{:colspan => 2}== No #{proper_model_name.pluralize}
+
+%p
+  = link_to(image("new-#{model_name}", :alt => "New #{proper_model_name}"), send("#{model_name}_new_url"))

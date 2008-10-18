@@ -45,31 +45,30 @@ automagical and too top secret to disclose.
 
 WHY CHANGE THINGS?
 ==================
-As John sees it, the pages tab is really for storing the main content. (Think of
-it as the list of available destinations for your users). Sure, they need
+As John sees it, the pages tab is for storing the main content. (Think of the
+tree view as the list of available destinations for your users). Sure, they need
 stylesheets and javascripts but those are supporting files (much like images).
 They augment your pages.
 
 There are a number of interesting benefits gained by this approach:
 
-  * These files really deserve designer-level permissions -- not user-level.
-    Well, they just got their own tabs with the appropriate permissions.
+  * CSS and JS files now get designer-level permissions -- not user-level.
 
-  * These files should be cached differently.  Rather than the 5 minute
-    page cache, we now have essentially infinite caching.  Even more importantly
-    because there's no dynamic content, we can tie the Last-Modified header to
-    the updated_at datestamp and allow your server to quit repeatedly serving
-    these assets.
+  * These files are now cached differently.  Rather than the 5-minute expiration
+    on pages, these files can now report to the browser the true LAST-MODIFIED
+    date so we don't have to serve up these files constantly.  We can put the
+    user's browser caching to work.
 
-  * This frees up pages to offer fields (like meta keywords, meta description,
-    etc.) and focus on behaviors that make absolutely no sense for, say, a 
-    stylesheet page (I mean, do javascripts really need a layout?).
+  * This properly separates the concerns of Pages and Text Assets. (I mean, do 
+    javascripts really need a layout or stylesheets a breadcrumb?).  Easier to 
+    understand for the user and easier to develop for.
     
-  * Makes it easy to include search functionality across your pages without
-    terms like "background" yielding all your stylesheets.
+  * Allows extensions to deal better interact with pages.  For example, a search
+    extension can now safely parse all the pages without terms like "background"
+    yielding all your stylesheets.
 
   * Declutter the pages tree view so that it truly only shows what your clients
-    see -- the things they'd aim their browser at.
+    see -- the things they'd aim their browser at (see John's point above).
 
   * This opens the door for validation, minification and obfuscation of scripts
     and stylesheets (I'm thinking that these belong in a separate extension but

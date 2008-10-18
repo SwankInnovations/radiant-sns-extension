@@ -10,11 +10,13 @@ require File.dirname(__FILE__) + '/../spec_helper'
 [ { :asset_class => Stylesheet,
     :name => 'stylesheet',
     :default_mime_type => 'text/css',
+    :default_directory => '/css',
     :inline_element => 'style' },
 
   { :asset_class => Javascript,
     :name => 'javascript',
     :default_mime_type => 'text/javascript',
+    :default_directory => '/js',
     :inline_element => 'script' }
 
 ].each do |current_tag|
@@ -56,12 +58,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
       StylesNScripts::Config["#{current_tag[:name]}_directory"] = 'foo/bar/baz'
       ActionController::Routing::Routes.reload!
       @page.should render(%{<r:#{current_tag[:name]} name="main" as="url" />}).as(
-          "foo/bar/baz/main")
+          "/foo/bar/baz/main")
 
       StylesNScripts::Config.restore_defaults
       ActionController::Routing::Routes.reload!
       @page.should render(%{<r:#{current_tag[:name]} name="main" as="url" />}).as(
-          "#{StylesNScripts::Config["#{current_tag[:name]}_directory"]}/main")
+          "#{current_tag[:default_directory]}/main")
     end  
 
 
@@ -75,9 +77,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
         ActionController::Routing::Routes.reload!
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" />}).as(
             %{<#{current_tag[:inline_element]} type="bologna">\n} <<
-            %{<!--\n} <<
+            %{//<![CDATA[\n} <<
             %{Main #{current_tag[:name]} content\n} <<
-            %{-->\n} <<
+            %{//]]>\n} <<
             %{</#{current_tag[:inline_element]}>}
         )
 
@@ -86,9 +88,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
         ActionController::Routing::Routes.reload!
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" />}).as(
             %{<#{current_tag[:inline_element]} type="#{current_tag[:default_mime_type]}">\n} <<
-            %{<!--\n} <<
+            %{//<![CDATA[\n} <<
             %{Main #{current_tag[:name]} content\n} <<
-            %{-->\n} <<
+            %{//]]>\n} <<
             %{</#{current_tag[:inline_element]}>}
         )
       end
@@ -97,9 +99,9 @@ require File.dirname(__FILE__) + '/../spec_helper'
       it %{if a 'type' element is defined in the <r:#{current_tag[:name]}> tag, this should override the default value as the <#{current_tag[:inline_element]}> element's 'type' attribute} do
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" type="oscar" />}).as(
             %{<#{current_tag[:inline_element]} type="oscar">\n} <<
-            %{<!--\n} <<
+            %{//<![CDATA[\n} <<
             %{Main #{current_tag[:name]} content\n} <<
-            %{-->\n} <<
+            %{//]]>\n} <<
             %{</#{current_tag[:inline_element]}>}
         )
       end
@@ -109,16 +111,80 @@ require File.dirname(__FILE__) + '/../spec_helper'
         StylesNScripts::Config.restore_defaults
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" another="mayer" ATTRIB="WEINER" />}).as(
             %{<#{current_tag[:inline_element]} type="#{current_tag[:default_mime_type]}" another="mayer" attrib="WEINER">\n} <<
-            %{<!--\n} <<
+            %{//<![CDATA[\n} <<
             %{Main #{current_tag[:name]} content\n} <<
-            %{-->\n} <<
+            %{//]]>\n} <<
             %{</#{current_tag[:inline_element]}>}
         )
       end      
 
     end
 
+
+
+
+    describe "when the 'as' attribute is set to 'link'" do
+
+      it "should render a <#{current_tag[:inline_element]}> element with a 'src' attribute referencing the #{current_tag[:name]} and with the type attribute matching the #{current_tag[:name]}_mime_type setting" do
+        # try with a custom mime_type value
+        StylesNScripts::Config["#{current_tag[:name]}_mime_type"] = 'bologna'
+        StylesNScripts::Config["#{current_tag[:name]}_directory"] = 'foo/bar/baz'
+        ActionController::Routing::Routes.reload!
+        if current_tag[:name] == 'stylesheet'
+          @page.should render(%{<r:stylesheet name="main" as="link" />}).as(
+              %{<link rel="stylesheet" href="/foo/bar/baz/main" type="bologna" />}
+          )
+        elsif current_tag[:name] == 'javascript'
+           @page.should render(%{<r:javascript name="main" as="link" />}).as(
+              %{<script src="/foo/bar/baz/main" type="bologna"></script>}
+          )
+        end
+
+        # try with the default mime_type and directory values
+        StylesNScripts::Config.restore_defaults
+        ActionController::Routing::Routes.reload!
+        if current_tag[:name] == 'stylesheet'
+          @page.should render(%{<r:stylesheet name="main" as="link" />}).as(
+              %{<link rel="stylesheet" href="#{current_tag[:default_directory]}/main" type="#{current_tag[:default_mime_type]}" />}
+          )
+        elsif current_tag[:name] == 'javascript'
+           @page.should render(%{<r:javascript name="main" as="link" />}).as(
+              %{<script src="#{current_tag[:default_directory]}/main" type="#{current_tag[:default_mime_type]}"></script>}
+          )
+        end
+      end
+
+
+      it %{if a 'type' element is defined in the <r:#{current_tag[:name]}> tag, this should override the default value as the <#{current_tag[:inline_element]}> element's 'type' attribute} do
+        if current_tag[:name] == 'stylesheet'
+          @page.should render(%{<r:stylesheet name="main" as="link" type="oscar" />}).as(
+              %{<link rel="stylesheet" href="#{current_tag[:default_directory]}/main" type="oscar" />}
+          )
+        elsif current_tag[:name] == 'javascript'
+           @page.should render(%{<r:javascript name="main" as="link" type="oscar" />}).as(
+              %{<script src="#{current_tag[:default_directory]}/main" type="oscar"></script>}
+          )
+        end
+      end
+
+
+      it %{should pass additional attributes into the <#{current_tag[:inline_element]}> element (and downcase each attribute name)} do
+        StylesNScripts::Config.restore_defaults
+        if current_tag[:name] == 'stylesheet'
+          @page.should render(%{<r:stylesheet name="main" as="link" another="mayer" ATTRIB="WEINER" />}).as(
+              %{<link rel="stylesheet" href="#{current_tag[:default_directory]}/main" type="#{current_tag[:default_mime_type]}" another="mayer" attrib="WEINER" />}
+          )
+        elsif current_tag[:name] == 'javascript'
+           @page.should render(%{<r:javascript name="main" as="link" another="mayer" ATTRIB="WEINER" />}).as(
+              %{<script src="#{current_tag[:default_directory]}/main" type="#{current_tag[:default_mime_type]}" another="mayer" attrib="WEINER"></script>}
+          )
+        end
+      end      
+
+    end
+
   end
+
 
 
 

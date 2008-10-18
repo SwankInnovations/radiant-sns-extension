@@ -47,6 +47,18 @@ class Admin::TextAssetController < Admin::AbstractModelController
   end
 
 
+  def upload
+    @uploaded_file = params[:text_asset][:file]
+    puts
+    puts @uploaded_file.content_type
+    puts @uploaded_file.original_filename
+    puts
+    puts @uploaded_file.methods.sort.join("\n")
+    puts params[:text_asset][:file].string
+    redirect_to send("#{ model_symbol }_new_url")
+  end
+
+
   private
 
     # since the model name comes from the params, the model_class cannot

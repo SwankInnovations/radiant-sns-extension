@@ -1,3 +1,22 @@
+v0.3.1  Moved Templates to Haml -- now requires Radiant 0.6.7 (or 0.6.6 and
+        install Haml yourself -- untested).
+
+        Added 'link' value to <r:stylesheet> and <r:javascript> tags so now you
+        can create an external link like:
+
+            <r:stylesheet name="my_file.css" as="link" />
+            
+            or
+            
+            <r:javascript name="my_file.js" as="link" />
+            
+        Also made the as="inline" option XHTML compliant by replacing the
+        commenting (<!-- -->) with a proper CDATA wrapper.
+ 
+        See the documentation in 'available tags' on the page-edit page for more
+        (now more readable).
+
+
 v0.3    Big new features plus code refactoring and a bug fix.  First, the new
         fetures include:
         
@@ -15,6 +34,13 @@ v0.3    Big new features plus code refactoring and a bug fix.  First, the new
             that the cache knows when to update (add, edit, or remove a file
             referenced by a <r:stylesheet> or <r:javascript> tag and the
             dependant file's effectively_updated_at time changes to reflect it).
+            
+          * Added file upload button to the index pages.  Now instead of just
+            creating new stylesheets or javascripts, you can upload a file into
+            Radiant
+        
+        The bugfix includes the completion of the one addressed in v0.2.1 by
+        adding the form helper to the remove.html.erb template.
             
             
 v0.2.2  Bugfix - I added the UserActionObserver behavior and accompanying specs

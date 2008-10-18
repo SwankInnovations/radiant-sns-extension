@@ -1,0 +1,22 @@
+- if @text_asset.new_record?
+  %h1== New #{proper_model_name}
+- else
+  %h1== Edit #{proper_model_name}
+- form_tag do
+  = hidden_field model_name, 'lock_version'
+  .form-area
+    %p.title
+      %label{:for=>"#{model_name}_filename"} Filename
+      = text_field model_name, "filename", :class => 'textbox', :maxlength => 100
+    %p.content
+      %label{:for=>"#{model_name}_content"} Body
+      ~ text_area model_name, "content", :class => "textarea", :style => "width: 100%"
+    = updated_stamp @text_asset
+
+    = javascript_tag "$("#{model_name}_filename").activate()"
+
+  %p.buttons
+    = save_model_button(@text_asset)
+    = save_model_and_continue_editing_button(@text_asset)
+    or
+    = link_to 'Cancel', send("#{model_name}_index_url")
