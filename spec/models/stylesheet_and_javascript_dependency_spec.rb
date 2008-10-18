@@ -73,20 +73,20 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 
     it "should reflect its own creation date/time (created_at) if the file hasn't been updated and has no dependencies" do
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1990)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1990)
     end
 
 
     it "should reflect its own change date/time (updated_at) if the file has no dependencies" do
       save_asset_at(@dependant, 1994)
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1994)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1994)
     end
 
 
     it "should reflect its own change date/time if it references dependencies which do not exist" do
       @dependant.content = %{<r:#{current_tag[:name]}name="a_bogus_text_asset" />}
       save_asset_at(@dependant, 1994)
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1994)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1994)
     end
 
 
@@ -98,7 +98,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       save_asset_at(@dependency, 1995)
 
       @dependant = current_tag[:class].find_by_filename('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1995)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1995)
     end
 
 
@@ -112,7 +112,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       save_asset_at(@dependant, 1999)
 
       @dependant = current_tag[:class].find_by_filename('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1999)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1999)
     end
 
 
@@ -126,7 +126,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       save_asset_at(@dependency, 1993)
 
       @dependant = current_tag[:class].find_by_filename('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1993)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1993)
     end
 
 
@@ -137,11 +137,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
       save_asset_at(@dependant, 1997)
 
-      Time.stub!(:now).and_return(Time.local(1998))
+      Time.stub!(:now).and_return(Time.gm(1998))
       @dependency.destroy
 
       @dependant = current_tag[:class].find_by_filename('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.local(1998)
+      @dependant.dependencies.effectively_updated_at.should == Time.gm(1998)
     end
   
   end
@@ -152,6 +152,6 @@ end
 private
 
   def save_asset_at(text_asset, year)
-    Time.stub!(:now).and_return(Time.local(year))
+    Time.stub!(:now).and_return(Time.gm(year))
     text_asset.save!
   end

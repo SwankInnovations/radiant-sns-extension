@@ -6,7 +6,7 @@ include CustomSettings
 
 
 class StylesNScriptsExtension < Radiant::Extension
-  version "0.4"
+  version "0.4.1"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
 

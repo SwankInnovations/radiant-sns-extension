@@ -218,12 +218,30 @@ describe TextAssetSiteController do
         end
 
 
+        it "should be a string" do
+          get :show_text_asset,
+              :filename => ['dependant'],
+              :directory => current_asset[:default_directory],
+              :asset_type =>  current_asset[:name]
+          response.headers['Last-Modified'].should be_kind_of(String)
+        end
+
+
+        it "should use a valid HTTP header date format" do
+          get :show_text_asset,
+              :filename => ['dependant'],
+              :directory => current_asset[:default_directory],
+              :asset_type =>  current_asset[:name]
+          response.headers['Last-Modified'].should == "Mon, 01 Jan 1990 00:00:00 GMT"
+        end
+
+
         it "should reflect the #{current_asset[:name]}'s updated_at date/time if the file has no dependencies" do
           get :show_text_asset,
               :filename => ['dependant'],
               :directory => current_asset[:default_directory],
               :asset_type =>  current_asset[:name]
-          response.headers['Last-Modified'].should == Time.local(1990)
+          response.headers['Last-Modified'].should == Time.gm(1990).httpdate
         end
 
 
@@ -236,7 +254,7 @@ describe TextAssetSiteController do
               :filename => ['dependant'],
               :directory => current_asset[:default_directory],
               :asset_type =>  current_asset[:name]
-          response.headers['Last-Modified'].should == Time.local(1992)
+          response.headers['Last-Modified'].should == Time.gm(1992).httpdate
         end
 
 
@@ -249,7 +267,7 @@ describe TextAssetSiteController do
               :filename => ['dependant'],
               :directory => current_asset[:default_directory],
               :asset_type =>  current_asset[:name]
-          response.headers['Last-Modified'].should == Time.local(1994)
+          response.headers['Last-Modified'].should == Time.gm(1994).httpdate
         end
         
       end
@@ -264,6 +282,6 @@ end
 private
 
   def save_asset_at(text_asset, year)
-    Time.stub!(:now).and_return(Time.local(year))
+    Time.stub!(:now).and_return(Time.gm(year))
     text_asset.save!
   end
