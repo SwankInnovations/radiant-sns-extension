@@ -1,4 +1,4 @@
-module StylesNScripts
+module Sns
   class Config
 
     # stores the default values for the settings

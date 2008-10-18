@@ -9,7 +9,7 @@ require_dependency 'application'
 require 'ostruct'
 
 
-class StylesNScriptsExtension < Radiant::Extension
+class SnsExtension < Radiant::Extension
   version "0.5"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"

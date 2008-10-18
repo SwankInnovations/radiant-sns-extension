@@ -55,11 +55,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 
     it "should render the url of the #{current_tag[:name]} when the 'as' attribute is set to 'url'" do
-      StylesNScripts::Config["#{current_tag[:name]}_directory"] = 'foo/bar/baz'
+      Sns::Config["#{current_tag[:name]}_directory"] = 'foo/bar/baz'
       @page.should render(%{<r:#{current_tag[:name]} name="main" as="url" />}).as(
           "/foo/bar/baz/main")
 
-      StylesNScripts::Config.restore_defaults
+      Sns::Config.restore_defaults
       @page.should render(%{<r:#{current_tag[:name]} name="main" as="url" />}).as(
           "#{current_tag[:default_directory]}/main")
     end
@@ -71,7 +71,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
       it "should render a <#{current_tag[:inline_element]}> element containing the content of the #{current_tag[:name]} with the type attribute matching the #{current_tag[:name]}_mime_type setting" do
         # try with a custom mime_type value
-        StylesNScripts::Config["#{current_tag[:name]}_mime_type"] = 'bologna'
+        Sns::Config["#{current_tag[:name]}_mime_type"] = 'bologna'
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" />}).as(
             %{<#{current_tag[:inline_element]} type="bologna">\n} <<
             %{//<![CDATA[\n} <<
@@ -81,7 +81,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
         )
 
         # try with the default mime_type value
-        StylesNScripts::Config.restore_defaults
+        Sns::Config.restore_defaults
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" />}).as(
             %{<#{current_tag[:inline_element]} type="#{current_tag[:default_mime_type]}">\n} <<
             %{//<![CDATA[\n} <<
@@ -104,7 +104,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 
       it %{should pass additional attributes into the <#{current_tag[:inline_element]}> element (and downcase each attribute name)} do
-        StylesNScripts::Config.restore_defaults
+        Sns::Config.restore_defaults
         @page.should render(%{<r:#{current_tag[:name]} name="main" as="inline" another="mayer" ATTRIB="WEINER" />}).as(
             %{<#{current_tag[:inline_element]} type="#{current_tag[:default_mime_type]}" another="mayer" attrib="WEINER">\n} <<
             %{//<![CDATA[\n} <<
@@ -123,8 +123,8 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
       it "should render a <#{current_tag[:inline_element]}> element with a 'src' attribute referencing the #{current_tag[:name]} and with the type attribute matching the #{current_tag[:name]}_mime_type setting" do
         # try with a custom mime_type value
-        StylesNScripts::Config["#{current_tag[:name]}_mime_type"] = 'bologna'
-        StylesNScripts::Config["#{current_tag[:name]}_directory"] = 'foo/bar/baz'
+        Sns::Config["#{current_tag[:name]}_mime_type"] = 'bologna'
+        Sns::Config["#{current_tag[:name]}_directory"] = 'foo/bar/baz'
         if current_tag[:name] == 'stylesheet'
           @page.should render(%{<r:stylesheet name="main" as="link" />}).as(
               %{<link rel="stylesheet" href="/foo/bar/baz/main" type="bologna" />}
@@ -136,7 +136,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
         end
 
         # try with the default mime_type and directory values
-        StylesNScripts::Config.restore_defaults
+        Sns::Config.restore_defaults
         if current_tag[:name] == 'stylesheet'
           @page.should render(%{<r:stylesheet name="main" as="link" />}).as(
               %{<link rel="stylesheet" href="#{current_tag[:default_directory]}/main" type="#{current_tag[:default_mime_type]}" />}
@@ -163,7 +163,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 
       it %{should pass additional attributes into the <#{current_tag[:inline_element]}> element (and downcase each attribute name)} do
-        StylesNScripts::Config.restore_defaults
+        Sns::Config.restore_defaults
         if current_tag[:name] == 'stylesheet'
           @page.should render(%{<r:stylesheet name="main" as="link" another="mayer" ATTRIB="WEINER" />}).as(
               %{<link rel="stylesheet" href="#{current_tag[:default_directory]}/main" type="#{current_tag[:default_mime_type]}" another="mayer" attrib="WEINER" />}

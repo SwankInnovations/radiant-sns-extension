@@ -15,7 +15,7 @@ describe SiteController, "(Extended)" do
 
   before(:each) do
     # make sure the css_ and js_directories are the default ones
-    StylesNScripts::Config.restore_defaults
+    Sns::Config.restore_defaults
 
     # don't bork results with stale cache items
 #    controller.text_asset_cache.clear
@@ -55,7 +55,7 @@ describe SiteController, "(Extended)" do
 
 
       it "should send customized #{current_asset[:name]}_directory urls to #show_page action" do
-        StylesNScripts::Config["#{current_asset[:name]}_directory"] = "foo"
+        Sns::Config["#{current_asset[:name]}_directory"] = "foo"
         params_from(:get, "/foo/main").should ==
                     { :controller => "site",
                       :action => "show_page",
@@ -64,7 +64,7 @@ describe SiteController, "(Extended)" do
 
 
       it "should send multi-level, customized #{current_asset[:name]}_directory urls to #show_page action" do
-        StylesNScripts::Config[current_asset[:name] + '_directory'] = 'foo/bar/baz'
+        Sns::Config[current_asset[:name] + '_directory'] = 'foo/bar/baz'
         params_from(:get, "/foo/bar/baz/main").should ==
                     { :controller => "site",
                       :action => "show_page",

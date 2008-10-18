@@ -84,7 +84,7 @@ There are a number of interesting benefits gained by this approach:
 
 == INSTALLATION
 1.  Copy this extension into your existing Radiant project (place it at:
-      [your project location]/vendor/extensions/styles_n_scripts
+      [your project location]/vendor/extensions/sns
 
 2.  Incorporate the database migrations into your existing database using:
       rake db:migrate:extensions
@@ -112,13 +112,8 @@ There are a number of interesting benefits gained by this approach:
 == TO-DO
 Figure out what the core team needs to get this puppy baked into Radiant!
 
-Improve caching by just clearing JS files on JS file update (and CSS on
-CSS file update) instead of clearing all. It also might be nice to cache files
-at save time too.  (But really, unless you have a *ton* of CSS or JS files, the
-current mechanism is pretty darn slick.
-
 Add a mechanism to eliminate (or at least reduce) the possibility of circular
-references with <r:stylesheet> or <r:javascript> tags.s
+references with <r:stylesheet> or <r:javascript> tags.
 
 Improve the file uploading: Do we need to confirm that it's a text file?  Do we
 need to mess with handling different text encoding?  Do we want to allow

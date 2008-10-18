@@ -1,3 +1,13 @@
+v0.6    Change extension code to use "sns" instead of "styles_n_scripts" -- this
+        will impact users as they need to move the extension from:
+          /vendor/extensions/styles_n_scripts
+        
+        to:
+          /vendor/extensions/sns
+          
+        Other than that, it's just a drop in replacement.
+
+
 v0.5    Lots of improvements here.  Some new features some just refactoring.
         
         Added Shards to the edit view so now this extension can be extended

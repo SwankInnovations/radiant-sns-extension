@@ -31,10 +31,10 @@ module SiteControllerMixins
       else
         url = url.to_s
       end
-      if url =~ %r{^\/?(#{StylesNScripts::Config[:stylesheet_directory]})\/(.*)$}
+      if url =~ %r{^\/?(#{Sns::Config[:stylesheet_directory]})\/(.*)$}
         show_text_asset($2, 'stylesheet')
 
-      elsif url =~ %r{^\/?(#{StylesNScripts::Config[:javascript_directory]})\/(.*)$}
+      elsif url =~ %r{^\/?(#{Sns::Config[:javascript_directory]})\/(.*)$}
         show_text_asset($2, 'javascript')
       end
     end
@@ -55,7 +55,7 @@ module SiteControllerMixins
 
     def show_uncached_text_asset(filename, asset_type, cache_url)
       @text_asset = asset_type.camelcase.constantize.find_by_filename(filename)
-      mime_type = StylesNScripts::Config["#{asset_type}_mime_type"]
+      mime_type = Sns::Config["#{asset_type}_mime_type"]
 
       unless @text_asset.nil?
         response.headers['Content-Type'] = mime_type

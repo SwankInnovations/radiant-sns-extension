@@ -59,7 +59,7 @@ module PageTagMixins
               text_asset.url
 
             when 'inline', 'link'
-              mime_type = tag.attr['type'] || StylesNScripts::Config["#{current_tag[:name]}_mime_type"]
+              mime_type = tag.attr['type'] || Sns::Config["#{current_tag[:name]}_mime_type"]
               optional_attribs = tag.attr.except('name', 'as', 'type').inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
               optional_attribs = " #{optional_attribs}" unless optional_attribs.empty?
 

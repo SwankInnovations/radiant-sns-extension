@@ -19,7 +19,7 @@ class RenameConfigKeysAndAddFilterId < ActiveRecord::Migration
         puts "\n                          * * * *  NOTICE  * * * *"
         puts "    The Styles 'n Scripts extension has changed the way its cache directory"
         puts "    is set and the previous setting cannot be migrated.  It can now be set"
-        puts "    using TEXT_ASSET_CACHE_DIR (found in: styles_n_scripts_extension.rb)."
+        puts "       using TEXT_ASSET_CACHE_DIR (found inside the: sns_extension.rb)."
         puts %{\n       Your previous setting was:   "#{old_cache_config.value}"}
         puts %{       The new value is currently:  "#{TEXT_ASSET_CACHE_DIR}"}
         puts "\n    If you want to use your old value again, go change TEXT_ASSET_CACHE_DIR"
