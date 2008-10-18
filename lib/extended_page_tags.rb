@@ -3,12 +3,12 @@ module ExtendedPageTags
   class TagError < StandardError; end
 
   [ { :name => 'stylesheet',
-      :asset_class => Stylesheet,
+      :class => Stylesheet,
       :inline_tag => 'style',
       :sample_file => 'my_file.css' },
       
     { :name => 'javascript',
-      :asset_class => Javascript,
+      :class => Javascript,
       :inline_tag => 'script',
       :sample_file => 'my_file.js' }
   ].each do |current_tag|
@@ -47,7 +47,7 @@ module ExtendedPageTags
     }
     tag(current_tag[:name]) do |tag|
       if name = tag.attr['name']
-        if text_asset = current_tag[:asset_class].find_by_filename(tag.attr['name'].strip)
+        if text_asset = current_tag[:class].find_by_filename(tag.attr['name'].strip)
           case tag.attr['as']
             when 'content', nil
               text_asset.render

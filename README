@@ -1,13 +1,46 @@
 = Styles 'n Scripts Extension
 
-The Styles 'n Scripts extension is a proof-of-concept suggested by John Long
+The Styles 'n Scripts extension was an extension requested by John Long
 as a means of separating javascripts & stylesheets from other site content
 stored in pages.
 
-Even though I call it "proof-of-concept," it's already been through one
-iteration with John and is pretty thoroughly tested so don't think that it's not
-usable yet.  (The versioning is more to denote the other features that I still
-want to put in it). 
+
+
+CONTENTS
+========
+In this README you'll find:
+  1. Usage
+  2. Why Change Things?
+  3. Installation
+  4. To Do
+
+
+
+USAGE
+=====
+Using this extension is rather painless.  If you can use the rest of Radiant,
+these additions will seem obvious.  There are a couple of things to take note
+of, however.
+
+  * The CSS and JS tabs are where you create, edit, and delete stylesheets and
+    javascripts.  But you need Administrator or Developer permissions to see
+    these tabs.
+    
+  * If you want to reference or otherwise use your script or stylesheet in one
+    of your pages, there are <r:stylesheet> and <r:javascript> tags.  These tags
+    can be used to inject your CSS or JS code into the page or just render a
+    link to the file itself. (See the 'available tags' link on the Page edit
+    form to learn more about options for these tags).
+    
+  * If you want to cut down on server requests for CSS and JS files, you can
+    also create a master CSS or JS file for each and use the appropriate 
+    <r:stylesheet> or <r:javascript> tags to incorporate other files of the same
+    type.  Viola, now Radiant offers asset packaging just like Rails!
+    
+
+That's it.  Everything else is either too obvious to bother with here or
+automagical and too top secret to disclose.
+
 
 
 WHY CHANGE THINGS?
@@ -33,7 +66,7 @@ There are a number of interesting benefits gained by this approach:
     stylesheet page (I mean, do javascripts really need a layout?).
     
   * Makes it easy to include search functionality across your pages without
-    terms like "background" turning up all your stylesheets.
+    terms like "background" yielding all your stylesheets.
 
   * Declutter the pages tree view so that it truly only shows what your clients
     see -- the things they'd aim their browser at.
@@ -45,6 +78,7 @@ There are a number of interesting benefits gained by this approach:
 
   * This lays a conceptual foundation for other, non-text assets like images,
     flash, and the like.
+
 
 
 INSTALLATION
@@ -72,6 +106,7 @@ INSTALLATION
     file.
 
 
+
 TO-DO
 =====
 Create a way for users to upload stylesheets and javascripts (maybe even upload 
@@ -80,13 +115,6 @@ many via a zipped file) and unpack them into the db.
 Improve caching.  I'd like to see a scenario where files are cached-on-save.
 Rails page caching might be a great choice.  (Maintaining the cache -- sweepers,
 etc. -- wouldn't be all that hard for these items.).
-
-Create <r:stylesheet> (or maybe <r:text_asset>) tag to let users reference
-stylesheets from pages, snippets, and layouts.  Is this really helpful?
-
-Create a <r:include_stylesheet> tag for stylesheets and one for scripts (similar
-to the <r:content> tag for pages) to merge stylesheets/scripts into one big file
-to reduce the number of requests and speed serving.
 
 Add file minification to strip out comments and whitespace (and maybe obfuscate)
 javascripts and stylesheets. (I already have this started).

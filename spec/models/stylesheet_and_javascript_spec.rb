@@ -1,3 +1,11 @@
+# This specs the behavior of the Stylesheet and Javascript models where they
+# share much the same behavior (this is better than spec-ing the TextAsset model 
+# since, frankly, we care about the Stylesheet and Javascript models, not their
+# parent).
+#
+# In the future, should unique behaviors appear, they would go at the bottom of
+# this spec or in their own specs.
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 [ Stylesheet, Javascript].each do |current_asset|
@@ -6,7 +14,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
     before(:each) do
       @record = current_asset.new
     end
-  
+
 
     it 'should limit the filename to 100 characters' do
       @record.filename = 'a' * 100
@@ -41,7 +49,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       if current_asset == Stylesheet
         @record_of_other_subclass = Javascript.new(:filename => 'abc.123')
       elsif current_asset == Javascript
-        @record_of_other_subclass = Stylesheet.new(:filename => 'abc.123')      
+        @record_of_other_subclass = Stylesheet.new(:filename => 'abc.123')
       end
       @record_of_other_subclass.should be_valid
     end
@@ -83,6 +91,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
         @record.errors.on(:filename).should == 'invalid format' 
       end
     end
+
 
     it 'should automatically sort by filename' do
       @record.filename = 'a_is_for_apple'

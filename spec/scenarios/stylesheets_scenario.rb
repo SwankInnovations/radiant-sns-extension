@@ -1,18 +1,17 @@
 class StylesheetsScenario < Scenario::Base
 
   def load
-    create_stylesheet "main.css",
-                     :content => "Main stylesheet content",
-                     :created_at => DateTime.parse('1620-11-21 12:00:00'),
-                     :updated_at => DateTime.parse('1621-10-15 06:00:00')
+    create_stylesheet "main", :content => "Main stylesheet content"
   end
 
 
   helpers do
+
     def create_stylesheet(filename, attributes={})
       create_model :stylesheet, 
                     filename.symbolize,
-                    stylesheet_params(attributes.reverse_merge(:filename => filename))
+                    stylesheet_params(
+                        attributes.reverse_merge(:filename => filename) )
     end
 
 
@@ -20,7 +19,7 @@ class StylesheetsScenario < Scenario::Base
       filename = attributes[:filename] || unique_stylesheet_filename
       { 
         :filename => filename,
-        :content => "dummy content"
+        :content => "stylesheet content for #{filename}"
       }.merge(attributes)
     end
 

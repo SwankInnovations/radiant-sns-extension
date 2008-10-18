@@ -19,7 +19,7 @@ class TextAssetSiteController < SiteController
       @text_asset_cache.update_response(url, response, request)
       @performed_render = true
     else
-      show_uncached_text_asset(filename, params[:asset_class], url)
+      show_uncached_text_asset(filename, params[:asset_type], url)
     end
   end
 
@@ -39,10 +39,10 @@ class TextAssetSiteController < SiteController
         response.headers['Content-Type'] = mime_type
         # set the last modified date based on updated_at time for the asset
         # we can do this as long as there is no dynamic content in the assets
-        response.headers['Last-Modified'] = @text_asset.updated_at
+        response.headers['Last-Modified'] = @text_asset.effectively_updated_at
         response.body = @text_asset.render
 
-        # for text_assets, we cache no matter what (there's no status setting for them)
+        # for text_assets, we cache no matter what (no 'status' setting for them)
         text_asset_cache.cache_response(url, response) if request.get?
         @performed_render = true
       else

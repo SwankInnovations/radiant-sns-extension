@@ -12,6 +12,6 @@
   </tbody>
 </table>
 
-<form method="post" action="">
+<% form_tag do %>
   <p class="buttons"><%= submit_tag("Delete #{proper_model_name}", :class => 'button') %> or <%= link_to('Cancel', send("#{model_name}_index_url") ) %></p>
-</form>
+<% end %>

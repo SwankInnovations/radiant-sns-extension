@@ -1,18 +1,17 @@
 class JavascriptsScenario < Scenario::Base
 
   def load
-    create_javascript "main.js",
-                    :content => 'Main javascript content',
-                    :created_at => DateTime.parse('1775-04-19 05:30:00'),
-                    :updated_at => DateTime.parse('1776-12-01 14:00:00')
+    create_javascript "main", :content => 'Main javascript content'
   end
 
 
   helpers do
+
     def create_javascript(filename, attributes={})
       create_model :javascript, 
                     filename.symbolize,
-                    javascript_params(attributes.reverse_merge(:filename => filename))
+                    javascript_params(
+                        attributes.reverse_merge(:filename => filename) )
     end
 
 
@@ -20,7 +19,7 @@ class JavascriptsScenario < Scenario::Base
       filename = attributes[:filename] || unique_javascript_filename
       { 
         :filename => filename,
-        :content => "dummy content"
+        :content => "javascript content for #{filename}"
       }.merge(attributes)
     end
 

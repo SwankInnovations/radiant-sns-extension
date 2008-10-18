@@ -1,0 +1,48 @@
+v0.3    Big new features plus code refactoring and a bug fix.  First, the new
+        fetures include:
+        
+          * Added <r:stylesheet> and <r:javascript> tags for use in pages.  This
+            lets you inject your stylesheet or javascript code into your Page 
+            much like using a snippet or just render the URL to the referenced
+            CSS or JS file (see the readme for more on this).
+            
+          * Added <r:stylesheet> and <r:javascript> tags for use in other
+            Stylesheets or Javascripts.  This lets you maintain mulitple files
+            yet just serve one master-stylesheet or master-javascript to your
+            end users (cut down on server requests)
+            
+            Along with this, I did a fancy trick with tracking dependencies so
+            that the cache knows when to update (add, edit, or remove a file
+            referenced by a <r:stylesheet> or <r:javascript> tag and the
+            dependant file's effectively_updated_at time changes to reflect it).
+            
+            
+v0.2.2  Bugfix - I added the UserActionObserver behavior and accompanying specs
+        to the Stylesheet and Javascript models 
+
+v0.2.1  Bugfix - I corrected the ActionController::InvalidAuthenticityToken that
+        comes from my not using the form helpers in my templates.  I also weakly
+        spec-ed it.
+        
+        NOTE: This was only a partial fix.  I corrected the edit.html.erb
+        template but not the remove.html.erb one.  See v0.3 for the completely
+        fixed version.
+
+
+v0.2    Initial public release.  Complete rebuild of the extension to work with
+        Rails 2.0 and Radiant 0.6.6.  Added *lots* of specs and focused on
+        making this thing robust.
+        
+        Basic functionality included:
+        
+          * Stores stylesheet and javascript files
+          
+          * Caches them with their own, improved response cache (improved in
+            that it handles this file type better)
+            
+          * Configuration management utility to allow extension users to adjust
+            default settings
+
+
+v0.1    Private release to John and Sean as a proof-of-concept (initially called
+        the Files extension).

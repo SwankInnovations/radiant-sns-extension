@@ -1,3 +1,6 @@
+# This specifies the behavior for the configuration module that allows extension
+# users to modify the default settings used by this extension.
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe StylesNScripts::Config do

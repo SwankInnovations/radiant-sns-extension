@@ -1,3 +1,6 @@
+# This specifies the behavior of the TextAssetResponseCache which controlls the
+# caching of stylesheets and javascripts.
+
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TextAssetResponseCache do
@@ -17,6 +20,7 @@ describe TextAssetResponseCache do
     TextAssetResponseCache.defaults[:perform_caching] = true
   end
 
+
   before(:each) do
     FileUtils.rm_rf @baddir
     @cache = TextAssetResponseCache.new(
@@ -26,9 +30,11 @@ describe TextAssetResponseCache do
     @cache.clear
   end
 
+
   after :each do
     FileUtils.rm_rf @dir if File.exists? @dir
   end
+
 
   after :all do
     TextAssetResponseCache.defaults[:perform_caching] = @old_preform_caching
@@ -65,7 +71,7 @@ describe TextAssetResponseCache do
   end
 
 
-# These specs are stolen directly from the response_cache_spec.  Mostly these
+# These two specs are stolen directly from the response_cache_spec.  Mostly these
 # are redundant tests but I at least wanted to ensure that it actually caches
   ['test/me', '/test/me', 'test/me/', '/test/me/', 'test//me'].each do |url|
     it "should cache response for url: #{url.inspect}" do
@@ -87,16 +93,16 @@ describe TextAssetResponseCache do
     File.exists?("#{@dir}/styles.css.yml").should == true
   end
 
-
-  private
-
-    def file(filename)
-      open(filename) { |f| f.read } rescue ''
-    end
-
-
-    def response(*args)
-      TestResponse.new(*args)
-    end
-
 end
+
+
+private
+
+  def file(filename)
+    open(filename) { |f| f.read } rescue ''
+  end
+
+
+  def response(*args)
+    TestResponse.new(*args)
+  end
