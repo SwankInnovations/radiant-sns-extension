@@ -4,13 +4,12 @@
 # NOTE: If you change this, don't forget to remove any previous cache folder
 TEXT_ASSET_CACHE_DIR = "text_asset_cache"
 
-# Uncomment this if you reference any of your controllers in activate
 require_dependency 'application'
 require 'ostruct'
 
 
 class SnsExtension < Radiant::Extension
-  version "0.5"
+  version "0.6.2"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
   url ""

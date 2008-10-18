@@ -1,4 +1,6 @@
-v.06.1  Bug fix:  Text Assets were rendering with no Status header.  Apparently
+v0.6.2  Minor, minor fix: Corrected extension versioning and this history file.
+
+v0.6.1  Bug fix:  Text Assets were rendering with no Status header.  Apparently
         LiteSpeed does not like this.  Now yields 200 code.
 
 
