@@ -1,0 +1,1 @@
+class Stylesheet < TextAsset; end

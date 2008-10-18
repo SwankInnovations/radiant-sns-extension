@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-[ CssAsset, JsAsset].each do |current_asset|
+[ Stylesheet, Javascript].each do |current_asset|
   describe current_asset do
   
     before(:each) do
@@ -38,10 +38,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @record.filename = 'abc.123'
       @record.save!
 
-      if current_asset == CssAsset
-        @record_of_other_subclass = JsAsset.new(:filename => 'abc.123')
-      elsif current_asset == JsAsset
-        @record_of_other_subclass = CssAsset.new(:filename => 'abc.123')      
+      if current_asset == Stylesheet
+        @record_of_other_subclass = Javascript.new(:filename => 'abc.123')
+      elsif current_asset == Javascript
+        @record_of_other_subclass = Stylesheet.new(:filename => 'abc.123')      
       end
       @record_of_other_subclass.should be_valid
     end
@@ -84,12 +84,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
       end
     end
 
-
-  it 'should yeild the same output for #content and #raw_content methods' do
-    @record.filename = "valid.filename"
-    @record.raw_content = "my raw content"
-    @record.content.should == "my raw content"
-  end
 
   end
 end

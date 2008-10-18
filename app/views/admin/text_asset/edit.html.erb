@@ -1,0 +1,30 @@
+<% if @text_asset.new_record? -%>
+<h1>New <%= proper_model_name %></h1>
+<% else -%>
+<h1>Edit <%= proper_model_name %></h1>
+<% end -%>
+
+<form method="post" action="">
+  <%= hidden_field(model_name, "lock_version") %>
+  <div class="form-area">
+    <p class="title">
+      <label for="<%= model_name %>_filename">Filename</label>
+      <%= text_field(model_name, "filename", :class => 'textbox', :maxlength => 100) %>
+    </p>
+
+    <p class="content">
+      <label for="<%= model_name %>_content">Body</label>
+      <%= text_area(model_name, "content", :class => "textarea", :style => "width: 100%") %>
+    </p>
+
+    <span class="clear">&nbsp;</span>
+
+    <%= updated_stamp @text_asset %>
+  </div>
+
+  <p class="buttons">
+  <%= submit_tag(@text_asset.new_record? ? "Create #{proper_model_name}" : 'Save Changes', :class => 'button') %> <%= save_model_and_continue_editing_button(@text_asset) %> or <%= link_to("Cancel", send("#{model_name}_index_url") ) %>
+  </p>
+</form>
+
+<%= focus("#{model_name}_filename") %>

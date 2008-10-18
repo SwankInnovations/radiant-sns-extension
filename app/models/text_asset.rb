@@ -7,8 +7,9 @@ class TextAsset < ActiveRecord::Base
   # the following regexp uses \A and \Z rather than ^ and $ to enforce no "\n" characters
   validates_format_of :filename, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
 
-  def content
-    self.raw_content
+  def url
+    StylesNScripts::Config["#{self.class.to_s.underscore}_directory"] +
+        "/" + self.filename
   end
 
 end

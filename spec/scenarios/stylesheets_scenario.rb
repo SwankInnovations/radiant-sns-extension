@@ -1,23 +1,29 @@
 class StylesheetsScenario < Scenario::Base
 
   def load
-    create_css_asset "main.css", :raw_content => "Main css_asset content"
+    create_stylesheet "main.css",
+                     :content => "Main stylesheet content",
+                     :created_at => DateTime.parse('1620-11-21 12:00:00'),
+                     :updated_at => DateTime.parse('1621-10-15 06:00:00')
   end
 
+
   helpers do
-    def create_css_asset(filename, attributes={})
-      create_model :css_asset, 
+    def create_stylesheet(filename, attributes={})
+      create_model :stylesheet, 
                     filename.symbolize,
-                    css_asset_params(attributes.reverse_merge(:filename => filename))
+                    stylesheet_params(attributes.reverse_merge(:filename => filename))
     end
-    
-    def css_asset_params(attributes={})
-      filename = attributes[:filename] || unique_css_asset_filename
+
+
+    def stylesheet_params(attributes={})
+      filename = attributes[:filename] || unique_stylesheet_filename
       { 
         :filename => filename,
-        :raw_content => "dummy content"
+        :content => "dummy content"
       }.merge(attributes)
     end
+
 
     # the built-in scenario helper methods only deal with the root class (i.e.
     # the one with the table -- text_asset).  So we just build our own versions.
@@ -25,21 +31,23 @@ class StylesheetsScenario < Scenario::Base
     # NOTE: There must be no symbolic naming conflics between child classes (so
     # the Stylesheets scenario and Javascripts scenario can't both have a :main
     # That's ok since we're using :main_css and :main_js naming rules here.
-    def css_assets(symbolic_name)
+    def stylesheets(symbolic_name)
       text_assets(symbolic_name)
     end
 
-    def css_asset_id(symbolic_name)
+
+    def stylesheet_id(symbolic_name)
       text_asset_id(symbolic_name)
     end
 
-    private
-    
-      @@unique_css_asset_filename_call_count = 0
 
-      def unique_css_asset_filename
-        @@unique_css_asset_filename_call_count += 1
-        "css_asset-#{@@unique_css_asset_filename_call_count}.css"
+    private
+
+      @@unique_stylesheet_filename_call_count = 0
+
+      def unique_stylesheet_filename
+        @@unique_stylesheet_filename_call_count += 1
+        "stylesheet-#{@@unique_stylesheet_filename_call_count}.css"
       end
 
   end

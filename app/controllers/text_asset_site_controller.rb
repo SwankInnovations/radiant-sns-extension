@@ -24,26 +24,31 @@ class TextAssetSiteController < SiteController
   end
 
 
-  def show_uncached_text_asset(filename, asset_class, url)
-    case asset_class
-      when 'css_asset'
-        text_asset = CssAsset.find_by_filename(filename)      
-        mime_type = StylesNScripts::Config[:css_mime_type]
-      when 'js_asset'
-        text_asset = JsAsset.find_by_filename(filename)
-        mime_type = StylesNScripts::Config[:js_mime_type]
+  private
+
+    def show_uncached_text_asset(filename, asset_class, url)
+      case asset_class
+        when 'stylesheet'
+          @text_asset = Stylesheet.find_by_filename(filename)      
+          mime_type = StylesNScripts::Config[:stylesheet_mime_type]
+        when 'javascript'
+          @text_asset = Javascript.find_by_filename(filename)
+          mime_type = StylesNScripts::Config[:javascript_mime_type]
+      end
+      unless @text_asset.nil?
+        response.headers['Content-Type'] = mime_type
+        # set the last modified date based on updated_at time for the asset
+        # we can do this as long as there is no dynamic content in the assets
+        response.headers['Last-Modified'] = @text_asset.updated_at
+        response.body = @text_asset.content
+
+        # for text_assets, we cache no matter what (there's no status setting for them)
+        text_asset_cache.cache_response(url, response) if request.get?
+        @performed_render = true
+      else
+        params[:url] = url
+        show_page
+      end
     end
-    unless text_asset.nil?
-      response.headers['Content-Type'] = mime_type
-      response.body = text_asset.content
-      
-      # for text_assets, we cache no matter what (there's no status setting for them)
-      @text_asset_cache.cache_response(url, response) if request.get?
-      @performed_render = true
-    else
-      params[:url] = url
-      show_page
-    end
-  end
 
 end

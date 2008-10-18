@@ -4,10 +4,6 @@ require_dependency 'application'
 # allows admins to customize settings for the extension:
 include CustomSettings
 
-# minifier utilities (in /lib)
-require 'jsmin.rb'
-require 'cssmin.rb'
-
 
 class StylesNScriptsExtension < Radiant::Extension
   version "0.2"
@@ -17,30 +13,30 @@ class StylesNScriptsExtension < Radiant::Extension
 
   define_routes do |map|
     # Admin stylesheet Routes
-    map.with_options(:controller => 'admin/css') do |css|
-      css.css_asset_index   'admin/css',              :action => 'index'
-      css.css_asset_edit    'admin/css/edit/:id',     :action => 'edit'
-      css.css_asset_new     'admin/css/new',          :action => 'new'
-      css.css_asset_remove  'admin/css/remove/:id',   :action => 'remove'  
+    map.with_options(:controller => 'admin/css') do |controller|
+      controller.stylesheet_index   'admin/css',              :action => 'index'
+      controller.stylesheet_edit    'admin/css/edit/:id',     :action => 'edit'
+      controller.stylesheet_new     'admin/css/new',          :action => 'new'
+      controller.stylesheet_remove  'admin/css/remove/:id',   :action => 'remove'  
     end
     
     # Admin javascript Routes
-    map.with_options(:controller => 'admin/js') do |js|
-      js.js_asset_index   'admin/js',              :action => 'index'
-      js.js_asset_edit    'admin/js/edit/:id',     :action => 'edit'
-      js.js_asset_new     'admin/js/new',          :action => 'new'
-      js.js_asset_remove  'admin/js/remove/:id',   :action => 'remove'  
+    map.with_options(:controller => 'admin/js') do |controller|
+      controller.javascript_index   'admin/js',              :action => 'index'
+      controller.javascript_edit    'admin/js/edit/:id',     :action => 'edit'
+      controller.javascript_new     'admin/js/new',          :action => 'new'
+      controller.javascript_remove  'admin/js/remove/:id',   :action => 'remove'  
     end
 
     # Public side routes (for JS and CSS directories)
-    map.connect "#{StylesNScripts::Config[:css_directory]}/*filename",
+    map.connect "#{StylesNScripts::Config[:stylesheet_directory]}/*filename",
                 :controller => 'text_asset_site', :action => 'show_text_asset',
-                :directory => StylesNScripts::Config[:css_directory],
-                :asset_class => 'css_asset'
-    map.connect "#{StylesNScripts::Config[:js_directory]}/*filename",
+                :directory => StylesNScripts::Config[:stylesheet_directory],
+                :asset_class => 'stylesheet'
+    map.connect "#{StylesNScripts::Config[:javascript_directory]}/*filename",
                 :controller => 'text_asset_site', :action => 'show_text_asset',
-                :directory => StylesNScripts::Config[:js_directory],
-                :asset_class => 'js_asset'
+                :directory => StylesNScripts::Config[:javascript_directory],
+                :asset_class => 'javascript'
   end
 
   def activate

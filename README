@@ -1,52 +1,91 @@
 = Styles 'n Scripts Extension
 
-The files extension is a proof-of-concept suggested by John Long
-as a means of separating javascripts & stylesheets from other
-site content stored in pages.
+The Styles 'n Scripts extension is a proof-of-concept suggested by John Long
+as a means of separating javascripts & stylesheets from other site content
+stored in pages.
+
+Even though I call it "proof-of-concept," it's already been through one
+iteration with John and is pretty thoroughly tested so don't think that it's not
+usable yet.  (The versioning is more to denote the other features that I still
+want to put in it). 
 
 
 WHY CHANGE THINGS?
 ==================
-As John sees it, the pages tab is really for the main content. 
-(Think of it as the list of available destinations for your users)
-Sure, they need stylesheets and such but those are supporting files
-that they need to view your pages.
+As John sees it, the pages tab is really for storing the main content. (Think of
+it as the list of available destinations for your users). Sure, they need
+stylesheets and javascripts but those are supporting files (much like images).
+They augment your pages.
 
 There are a number of interesting benefits gained by this approach:
 
-  * These files really deserve designer-level permissions no user-
-    level.  Well, they just got their own tabs.
+  * These files really deserve designer-level permissions -- not user-level.
+    Well, they just got their own tabs with the appropriate permissions.
 
-  * These files should be cached differently.  Rather than the 5
-    minute page cache, we now have essentially infinite caching.
+  * These files should be cached differently.  Rather than the 5 minute
+    page cache, we now have essentially infinite caching.  Even more importantly
+    because there's no dynamic content, we can tie the Last-Modified header to
+    the updated_at datestamp and allow your server to quit repeatedly serving
+    these assets.
 
-  * This frees up pages to offer fields like <meta keywords...> that
-    make absolutely no sense for, say, a stylesheet page.
+  * This frees up pages to offer fields (like meta keywords, meta description,
+    etc.) and focus on behaviors that make absolutely no sense for, say, a 
+    stylesheet page (I mean, do javascripts really need a layout?).
     
-  * This opens the door for minification and obfuscation of scripts
-    and stylesheets (I've incorporated JSMin and a stylesheet minifier
-    in the initial release.  Future versions may include Dean Edwards Packer or
-    other more advanced compressors).
+  * Declutter the pages tree view so that it truly only shows what your clients
+    see -- the things they'd aim their browser at.
+
+  * This opens the door for validation, minification and obfuscation of scripts
+    and stylesheets (I'm thinking that these belong in a separate extension but
+    they're *much* easier to build now that CSS and JS are a distinct type of
+    object).
 
   * This lays a conceptual foundation for other, non-text assets like images,
     flash, and the like.
 
 
+INSTALLATION
+============
+1.  Copy this extension into your existing Radiant project (place it at:
+      [your project location]/vendor/extensions/styles_n_scripts
 
-  
+2.  Incorporate the database migrations into your existing database using:
+      rake db:migrate:extensions
+
+    Or, if you prefer to be more specific to this extension:
+      rake radiant:extensions:styles_n_scripts:migrate
+
+3.  Copy the needed images into Radiant's /public/images directory using:
+      rake radiant:extensions:styles_n_scripts:update
+
+4.  (Optional) Configure your stylesheet and javascript directories.  By default
+    The Styles 'n Scripts serves your stylesheets and javascripts out of the
+    /css and /js folders respectively.  You can change these locations via the
+    custom_settings.rb file if you wish (just make sure you aren't competing
+    with Radiant's /public files or your own pages.
+
+5.  (Optional) Configure your stylesheet and javascript content (MIME) types.
+    Again there are defaults but you can change them via the custom_settings.rb
+    file.
+
+
 TO-DO
 =====
-Create a way for users to upload stylesheets and javascripts (maybe even many in
-a zipped file) and unpack them into the db.
+Create a way for users to upload stylesheets and javascripts (maybe even upload 
+many via a zipped file) and unpack them into the db.
 
-Improve caching (I'd like to see a scenario where files are cached on save (or
-even just Rails page caching.  Maintaining a server-ready cache that bypasses
-ruby wouldn't be all that hard for these items.).
+Improve caching.  I'd like to see a scenario where files are cached-on-save.
+Rails page caching might be a great choice.  (Maintaining the cache -- sweepers,
+etc. -- wouldn't be all that hard for these items.).
 
 Create <r:stylesheet> (or maybe <r:text_asset>) tag to let users reference
-stylesheets from pages, snippets, and layouts.
+stylesheets from pages, snippets, and layouts.  Is this really helpful?
 
-Create a tagging mechanism for combining stylesheets or scripts into a single
-file to reduce the number of requests and speed serving.
+Create a <r:include_stylesheet> tag for stylesheets and one for scripts (similar
+to the <r:content> tag for pages) to merge stylesheets/scripts into one big file
+to reduce the number of requests and speed serving.
 
-Figure out what the core team needs to get this puppy baked in with Radiant!
+Add file minification to strip out comments and whitespace (and maybe obfuscate)
+javascripts and stylesheets. (I already have this started).
+
+Figure out what the core team needs to get this puppy baked into Radiant!

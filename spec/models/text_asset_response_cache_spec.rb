@@ -35,14 +35,15 @@ describe TextAssetResponseCache do
   end
 
 
-
   it 'should inherit from the Radiant ResponseCache' do
     @cache.should be_kind_of(ResponseCache)
   end
 
+
   it 'should set up its own instance (be independent of the Radiant ResponseCache' do
     @cache.should_not === ResponseCache.instance
   end
+
 
   it 'should have its default directory equal to StylesNScripts::Config setting' do
     # change the config setting, re-init the TextAssetResponseCache (a Singleton)
@@ -57,6 +58,7 @@ describe TextAssetResponseCache do
     Singleton.send :__init__, TextAssetResponseCache
     TextAssetResponseCache.instance.defaults[:directory].should == "#{RAILS_ROOT}/text_asset_cache"
   end
+
 
   it 'should have a default cache expiration of 1 year' do
     @cache.defaults[:expire_time].should == 1.year
@@ -79,10 +81,12 @@ describe TextAssetResponseCache do
     end
   end
 
+
   it 'cache response with extension' do
     @cache.cache_response("styles.css", response('content'))
     File.exists?("#{@dir}/styles.css.yml").should == true
   end
+
 
   private
 
@@ -90,9 +94,9 @@ describe TextAssetResponseCache do
       open(filename) { |f| f.read } rescue ''
     end
 
+
     def response(*args)
       TestResponse.new(*args)
     end
 
 end
-
