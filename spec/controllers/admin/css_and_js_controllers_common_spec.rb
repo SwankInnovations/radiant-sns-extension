@@ -17,6 +17,9 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 ].each do |current_asset|
 
   describe current_asset[:controller] do
+
+    integrate_views
+
     # ok, this is weird...  I would have just loaded all three scenarios but,
     # for some *strange* reason, which ever loads 2nd -- javascripts or
     # stylesheets -- trumps the previous.  Everything works fine *except* for

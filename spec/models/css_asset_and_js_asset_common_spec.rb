@@ -34,7 +34,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
     end
 
 
-    it 'should permit the same filename across different subclasses' do
+    it 'should permit the same filename as a stylesheet and javascript' do
       @record.filename = 'abc.123'
       @record.save!
 
@@ -84,6 +84,20 @@ require File.dirname(__FILE__) + '/../spec_helper'
       end
     end
 
+    it 'should automatically sort by filename' do
+      @record.filename = 'a_is_for_apple'
+      @record.save!
+
+      @record = current_asset.new
+      @record.filename = 'j_is_for_jacks'
+      @record.save!
+
+      @record = current_asset.new
+      @record.filename = 'c_is_for_chocolate_frosted_sugar_bombs'
+      @record.save!
+
+      current_asset.find(:all).should == current_asset.find(:all).sort_by { |item| item[:filename] }
+    end
 
   end
 end

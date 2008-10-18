@@ -6,7 +6,7 @@ include CustomSettings
 
 
 class StylesNScriptsExtension < Radiant::Extension
-  version "0.2"
+  version "0.2.1"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
 
@@ -39,11 +39,12 @@ class StylesNScriptsExtension < Radiant::Extension
                 :asset_class => 'javascript'
   end
 
+
   def activate
-#    SiteController.send :include, SiteControllerMods
     admin.tabs.add "CSS", "/admin/css", :after => "Layouts", :visibility => [:admin, :developer]
     admin.tabs.add "JS", "/admin/js", :after => "CSS", :visibility => [:admin, :developer]
   end
+
 
   def deactivate
     admin.tabs.remove "CSS"

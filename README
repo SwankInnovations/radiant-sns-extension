@@ -32,6 +32,9 @@ There are a number of interesting benefits gained by this approach:
     etc.) and focus on behaviors that make absolutely no sense for, say, a 
     stylesheet page (I mean, do javascripts really need a layout?).
     
+  * Makes it easy to include search functionality across your pages without
+    terms like "background" turning up all your stylesheets.
+
   * Declutter the pages tree view so that it truly only shows what your clients
     see -- the things they'd aim their browser at.
 

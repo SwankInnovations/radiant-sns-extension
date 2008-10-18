@@ -1,6 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe TextAssetSiteController, "routes text_asset requests" do
+
+  integrate_views
+
   # Pages scenario is used for two reasons. First, we test for conditions where
   # pages have been created that conflict with css_ or javascript_directory
   # values. Secondly, at least one page must exist when SiteController goes
