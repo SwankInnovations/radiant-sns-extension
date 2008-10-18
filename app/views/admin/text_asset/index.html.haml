@@ -1,3 +1,25 @@
+- content_for('page_scripts') do
+  :plain
+    function toggle_upload_popup() {
+      var popup = $('upload-popup');
+      center(popup);
+      Element.toggle(popup);
+    }
+    function uploadInProgress() {
+      $('upload_button').disabled = true;
+      //$('upload_file').disabled = true;
+      $('busy').appear();
+    }
+    function showErrorsPopup() {
+      var popup = $('upload-errors-popup');
+      center(popup);
+      popup.show();
+      $('upload-popup').hide();
+      $('busy').hide();
+      $('upload_button').disabled = false;
+      $('upload_file').disabled = false;
+    }
+    
 - if model_name == 'stylesheet'
   %h1 Stylesheets
   %p Cascading Stylesheets (CSS files) can be used to alter the look &amp; feel of your pages, layouts, and/or snippets.
@@ -27,3 +49,23 @@
 
 %p
   = link_to(image("new-#{model_name}", :alt => "New #{proper_model_name}"), send("#{model_name}_new_url"))
+  &nbsp;&nbsp;
+  = link_to image("upload-#{model_name}", :alt => "Upload #{proper_model_name}"), "#", :onclick => "toggle_upload_popup(); return false;"
+
+- content_for 'popups' do
+  .popup#upload-popup{:style => 'display:none;width:20em'}
+    #busy.busy{:style => "display: none"}= image 'spinner.gif'
+    %h3== Upload #{proper_model_name}
+    - form_for :upload, :url => send("#{model_name}_upload_url"),:html => { :multipart => true, :target => 'upload_frame', :onsubmit => 'uploadInProgress();' } do |f|
+      %p
+        %label{:for => 'upload_file'}== Select a #{model_name} file:
+      %p= f.file_field :file
+      %p= submit_tag 'Upload', :id => 'upload_button'
+    %p= link_to_function 'Close', "Element.hide('upload-popup')", :class => 'close-link'
+    %iframe{:id => 'upload_frame', :name => "upload_frame", :style => "width:1px;height:1px;border:0px", :src => "about:blank"}
+  .popup#upload-errors-popup{:style => 'display:none'}
+    %h3== Upload Errors
+    %p The file upload experinced the following errors:
+    %div{:id => "errors_for_#{model_name}"}
+    %p= link_to_function 'Close', "Element.hide('upload-errors-popup')", :class => 'close-link'
+    

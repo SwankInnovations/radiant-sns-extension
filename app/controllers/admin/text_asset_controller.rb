@@ -48,14 +48,39 @@ class Admin::TextAssetController < Admin::AbstractModelController
 
 
   def upload
-    @uploaded_file = params[:text_asset][:file]
-    puts
-    puts @uploaded_file.content_type
-    puts @uploaded_file.original_filename
-    puts
-    puts @uploaded_file.methods.sort.join("\n")
-    puts params[:text_asset][:file].string
-    redirect_to send("#{ model_symbol }_new_url")
+    if !request.post?  # not a POST request
+      render :template => "site/not_found", :status => :method_not_allowed
+
+    elsif params[:upload].nil?  # necessary params are missing
+      render :text => '', :status => :bad_request
+
+    else
+      @text_asset = model_class.create_from_file(params[:upload][:file])
+
+      if @text_asset.new_record?  # wasn't saved -- there must be errors
+        responds_to_parent do
+          render :update do |page|
+            # populate errors in the errors popup and call method to show
+            page.replace_html "errors_for_#{model_name}", 
+                '<ul class="uploadErrors">' + 
+                @text_asset.errors.collect{|k,v| 
+                  %{<li class="warning">#{k.humanize.titlecase}: #{v}</li>}
+                }.to_s +
+                '</ul>'
+            page.call('showErrorsPopup')
+          end
+        end
+
+      else  # success!
+        responds_to_parent do
+          render :update do |page| 
+            page.redirect_to(:action => 'index')
+          end
+        end
+
+      end
+
+    end
   end
 
 
@@ -67,6 +92,5 @@ class Admin::TextAssetController < Admin::AbstractModelController
     def set_model
       self.class.model_class params[:asset_type].camelize.constantize
     end
-
 
 end

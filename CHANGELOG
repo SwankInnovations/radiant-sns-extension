@@ -1,3 +1,6 @@
+v0.4    File Uploading!  You can now upload Javascripts or Stylesheets from the
+        corresponding index pages.
+
 v0.3.1  Moved Templates to Haml -- now requires Radiant 0.6.7 (or 0.6.6 and
         install Haml yourself -- untested).
 
@@ -45,6 +48,7 @@ v0.3    Big new features plus code refactoring and a bug fix.  First, the new
             
 v0.2.2  Bugfix - I added the UserActionObserver behavior and accompanying specs
         to the Stylesheet and Javascript models 
+
 
 v0.2.1  Bugfix - I corrected the ActionController::InvalidAuthenticityToken that
         comes from my not using the form helpers in my templates.  I also weakly

@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/../../spec_helper'
+
 # These specs set the behavior of TextAssetController (which behaves as both a
 # StylesheetController and JavascriptController).
 #
@@ -9,8 +11,6 @@
 # confirmed. That way, if the core team sees fit to change the behavior of
 # AbstractController, we'll know our extension just broke.
 
-require File.dirname(__FILE__) + '/../../spec_helper'
-
 [ { :class => Stylesheet,
     :name => 'stylesheet',
     :symbol => :stylesheet },
@@ -21,7 +21,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 ].each do |current_asset|
 
-  describe Admin::TextAssetController, "(rendering #{current_asset[:name].pluralize}" do
+  describe "For #{current_asset[:name].pluralize},", Admin::TextAssetController do
 
     integrate_views
 
@@ -48,36 +48,41 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
 
-    [:index, :new, :edit, :remove].each do |action|
+    [:index, :new, :edit, :remove, :upload].each do |action|
 
-      # moved this test into the actions as the controller inits this before action
+      # moved this test into the actions as the controller inits this before each action
       it "should have a model_class of #{current_asset[:name]}" do
         controller.class.model_class.should == current_asset[:class]
       end
 
 
-      it "should require login to access the #{action} action" do
-        logout
-        lambda { get action }.should require_login
-      end
+      describe "#{action} action" do
+
+        it "should require login to access the #{action} action" do
+          logout
+          lambda { get action }.should require_login
+        end
 
 
-      it "should allow access to developers" do
-        lambda { get action, :id => text_asset_id('main'),
-                             :asset_type => current_asset[:name]
-               }.should restrict_access(:allow => [users(:developer)])
-      end
+        it "should allow access to developers" do
+          lambda { get action, :id => text_asset_id('main'),
+                               :asset_type => current_asset[:name] }.should 
+              restrict_access(:allow => [users(:developer)])
+        end
 
 
-      it "should allow access to admins" do
-        lambda { get action, :id => text_asset_id('main'),
-                             :asset_type => current_asset[:name]
-               }.should restrict_access(:allow => [users(:admin)])
-      end
+        it "should allow access to admins" do
+          lambda { get action, :id => text_asset_id('main'),
+                               :asset_type => current_asset[:name]}.should
+              restrict_access(:allow => [users(:admin)])
+        end
 
 
-      it "should deny non-developers and non-admins" do
-        lambda { get action }.should restrict_access(:deny => [users(:non_admin), users(:existing)])
+        it "should deny non-developers and non-admins" do
+          lambda { get action,:asset_type => current_asset[:name] }.should 
+              restrict_access(:deny => [users(:non_admin), users(:existing)])
+        end
+
       end
 
     end

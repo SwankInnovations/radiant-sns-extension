@@ -19,36 +19,38 @@ In this README you'll find:
 USAGE
 =====
 Using this extension is rather painless.  If you can use the rest of Radiant,
-these additions will seem obvious.  There are a couple of things to take note
-of, however.
+using these additions should feel obvious.  There are a couple of things to take
+note of, however.
 
   * The CSS and JS tabs are where you create, edit, and delete stylesheets and
     javascripts.  But you need Administrator or Developer permissions to see
     these tabs.
-    
+
   * If you want to reference or otherwise use your script or stylesheet in one
     of your pages, there are <r:stylesheet> and <r:javascript> tags.  These tags
     can be used to inject your CSS or JS code into the page or just render a
-    link to the file itself. (See the 'available tags' link on the Page edit
-    form to learn more about options for these tags).
+    link to the file itself. (Click the 'available tags' link when editing your
+    Page to learn more about these two tags and their options).
     
-  * If you want to cut down on server requests for CSS and JS files, you can
-    also create a master CSS or JS file for each and use the appropriate 
-    <r:stylesheet> or <r:javascript> tags to incorporate other files of the same
-    type.  Viola, now Radiant offers asset packaging just like Rails!
-    
+  * If you really want to get fancy with your CSS and JS files, you can also use
+    the corresponding <r:stylesheet> or <r:javascript> to reference other files
+    of the same type.  So now you can create a single CSS or JS file that is
+    made up of sub-files to cut down on server requests and speed up page load
+    time -- viola, now Radiant offers asset packaging just like Rails! (And the
+    caching mechanism is smart enough to keep track of your file's dependencies)
+
 
 That's it.  Everything else is either too obvious to bother with here or
-automagical and too top secret to disclose.
+automagical and/or too top secret to disclose ;-).
 
 
 
 WHY CHANGE THINGS?
 ==================
-As John sees it, the pages tab is for storing the main content. (Think of the
-tree view as the list of available destinations for your users). Sure, they need
-stylesheets and javascripts but those are supporting files (much like images).
-They augment your pages.
+As John sees it, the pages tab is for storing your main content. (Think of the
+tree view as the list of available destinations for your users.  Sure, they need
+stylesheets and javascripts, but those are supporting files -- much like images
+-- that augment your pages).
 
 There are a number of interesting benefits gained by this approach:
 
@@ -62,21 +64,18 @@ There are a number of interesting benefits gained by this approach:
   * This properly separates the concerns of Pages and Text Assets. (I mean, do 
     javascripts really need a layout or stylesheets a breadcrumb?).  Easier to 
     understand for the user and easier to develop for.
-    
-  * Allows extensions to deal better interact with pages.  For example, a search
-    extension can now safely parse all the pages without terms like "background"
-    yielding all your stylesheets.
 
-  * Declutter the pages tree view so that it truly only shows what your clients
-    see -- the things they'd aim their browser at (see John's point above).
+  * Allows extensions to better interact with pages.  For example, a search
+    extension can now safely parse all the pages without search terms like:
+    "background" returning all your stylesheets.
+
+  * Declutter the pages tree view so that it only shows what your clients care
+    about -- the things they'd aim their browser at (see John's point above).
 
   * This opens the door for validation, minification and obfuscation of scripts
-    and stylesheets (I'm thinking that these belong in a separate extension but
-    they're *much* easier to build now that CSS and JS are a distinct type of
-    object).
-
-  * This lays a conceptual foundation for other, non-text assets like images,
-    flash, and the like.
+    and stylesheets (I'm thinking that these features belong in their own
+    extension(s) but they're *much* easier to build now that CSS and JS distinct
+    objects).
 
 
 
@@ -108,14 +107,16 @@ INSTALLATION
 
 TO-DO
 =====
-Create a way for users to upload stylesheets and javascripts (maybe even upload 
-many via a zipped file) and unpack them into the db.
-
-Improve caching.  I'd like to see a scenario where files are cached-on-save.
-Rails page caching might be a great choice.  (Maintaining the cache -- sweepers,
-etc. -- wouldn't be all that hard for these items.).
-
-Add file minification to strip out comments and whitespace (and maybe obfuscate)
-javascripts and stylesheets. (I already have this started).
-
 Figure out what the core team needs to get this puppy baked into Radiant!
+
+Improve caching by just clearing JS files on JS file update (and CSS on
+CSS file update) instead of clearing all. It also might be nice to cache files
+at save time too.  (But really, unless you have a *ton* of CSS or JS files, the
+current mechanism is pretty darn slick.
+
+Add a mechanism to eliminate (or at least reduce) the possibility of circular
+references with <r:stylesheet> or <r:javascript> tags.s
+
+Improve the file uploading: Do we need to confirm that it's a text file?  Do we
+need to mess with handling different text encoding?  Do we want to allow
+multiple file uploads?
