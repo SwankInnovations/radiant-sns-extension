@@ -18,7 +18,7 @@ describe SiteController, "(Extended)" do
     Sns::Config.restore_defaults
 
     # don't bork results with stale cache items
-#    controller.text_asset_cache.clear
+    controller.text_asset_cache.clear
   end
 
 
@@ -81,9 +81,7 @@ describe SiteController, "(Extended)" do
       it "should render the content for existing #{current_asset[:name].pluralize}" do
         get :show_page,
             :url => current_asset[:default_directory].split("/") << "main"
-#  For SOME reason, the response.header does not include a 'status' key so it is
-#  not possible to check for success.
-#        response.should be_success
+        response.should be_success
         response.body.should == "Main #{current_asset[:name]} content"
       end
 
@@ -92,9 +90,7 @@ describe SiteController, "(Extended)" do
         request.host = "dev.site.com"
         get :show_page,
             :url => current_asset[:default_directory].split("/") << "main"
-#  For SOME reason, the response.header does not include a 'status' key so it is
-#  not possible to check for success.
-#        response.should be_success
+        response.should be_success
         response.body.should == "Main #{current_asset[:name]} content"
       end
 
@@ -170,9 +166,7 @@ describe SiteController, "(Extended)" do
           send("create_#{current_asset[:name]}", 'abc.123')
           get :show_page,
               :url => current_asset[:default_directory].split("/") << 'abc.123'
-#  For SOME reason, the response.header does not include a 'status' key so it is
-#  not possible to check for success.
-#          response.should be_success
+          response.should be_success
           response.body.should == "#{current_asset[:name]} content for abc.123"
         end
 

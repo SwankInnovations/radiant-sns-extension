@@ -1,3 +1,7 @@
+v.06.1  Bug fix:  Text Assets were rendering with no Status header.  Apparently
+        LiteSpeed does not like this.  Now yields 200 code.
+
+
 v0.6    Change extension code to use "sns" instead of "styles_n_scripts" -- this
         will impact users as they need to move the extension from:
           /vendor/extensions/styles_n_scripts

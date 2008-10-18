@@ -74,7 +74,7 @@ describe TextAssetResponseCache do
   end
 
 
-# These two specs are stolen directly from the response_cache_spec.  Mostly these
+# These three specs are stolen directly from the response_cache_spec.  Mostly these
 # are redundant tests but I at least wanted to ensure that it actually caches
   ['test/me', '/test/me', 'test/me/', '/test/me/', 'test//me'].each do |url|
     it "should cache response for url: #{url.inspect}" do
@@ -90,6 +90,16 @@ describe TextAssetResponseCache do
     end
   end
 
+  it 'should send 304 response if cached Last-Modified date is older than If-Modified-Since date' do
+    last_modified = Time.now.httpdate
+    result = @cache.cache_response('test', response('content', 'Last-Modified' => last_modified))
+    request = ActionController::TestRequest.new
+    request.env = { 'HTTP_IF_MODIFIED_SINCE' => last_modified }
+    second_call = @cache.update_response('test', response, request)
+    second_call.headers['Status'].should match(/^304/)
+    second_call.body.should == ''
+    result.should be_kind_of(TestResponse)
+  end
 
   it 'cache response with extension' do
     @cache.cache_response("styles.css", response('content'))

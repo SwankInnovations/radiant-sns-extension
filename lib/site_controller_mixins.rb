@@ -58,10 +58,10 @@ module SiteControllerMixins
       mime_type = Sns::Config["#{asset_type}_mime_type"]
 
       unless @text_asset.nil?
+        response.body = @text_asset.render
+        response.headers['Status'] = ActionController::Base::DEFAULT_RENDER_STATUS_CODE
         response.headers['Content-Type'] = mime_type
         response.headers['Last-Modified'] = @text_asset.effectively_updated_at.httpdate
-        response.body = @text_asset.render
-        # for text_assets, we cache no matter what (no 'status' setting for them)
         text_asset_cache.cache_response(cache_url, response) if request.get?
         @performed_render = true
       end
