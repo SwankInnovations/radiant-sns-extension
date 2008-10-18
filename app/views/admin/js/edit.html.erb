@@ -1,0 +1,37 @@
+<% if @js_asset.new_record? -%>
+<h1>New Javascript</h1>
+<% else -%>
+<h1>Edit Javascript</h1>
+<% end -%>
+
+<form method="post" action="">
+  <%= hidden_field "js_asset", "lock_version" %>
+  <div class="form-area">
+    <p class="title">
+      <label for="js_asset_filename">Filename</label>
+      <%= text_field "js_asset", "filename", :class => 'textbox', :maxlength => 100 %>
+    </p>
+
+    <p class="content">
+      <label for="js_asset_raw_content">Body</label>
+      <%= text_area "js_asset", "raw_content", :class => "textarea", :style => "width: 100%" %>
+    </p>
+
+    <div class="row">
+      <p>
+        <%= check_box("js_asset", "minify") %>
+        <label for="js_asset_minify">Minify Output?</label>
+      </p>
+    </div>
+
+    <span class="clear">&nbsp;</span>
+
+    <%= updated_stamp @js_asset %>
+  </div>
+
+  <p class="buttons">
+  <%= submit_tag(@js_asset.new_record? ? 'Create Javascript' : 'Save Changes', :class => 'button') %> <%= save_model_and_continue_editing_button(@js_asset) %> or <%= link_to "Cancel", js_asset_index_url %>
+  </p>
+</form>
+
+<%= focus 'js_asset_filename' %>

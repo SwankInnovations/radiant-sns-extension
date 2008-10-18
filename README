@@ -1,0 +1,52 @@
+= Styles 'n Scripts Extension
+
+The files extension is a proof-of-concept suggested by John Long
+as a means of separating javascripts & stylesheets from other
+site content stored in pages.
+
+
+WHY CHANGE THINGS?
+==================
+As John sees it, the pages tab is really for the main content. 
+(Think of it as the list of available destinations for your users)
+Sure, they need stylesheets and such but those are supporting files
+that they need to view your pages.
+
+There are a number of interesting benefits gained by this approach:
+
+  * These files really deserve designer-level permissions no user-
+    level.  Well, they just got their own tabs.
+
+  * These files should be cached differently.  Rather than the 5
+    minute page cache, we now have essentially infinite caching.
+
+  * This frees up pages to offer fields like <meta keywords...> that
+    make absolutely no sense for, say, a stylesheet page.
+    
+  * This opens the door for minification and obfuscation of scripts
+    and stylesheets (I've incorporated JSMin and a stylesheet minifier
+    in the initial release.  Future versions may include Dean Edwards Packer or
+    other more advanced compressors).
+
+  * This lays a conceptual foundation for other, non-text assets like images,
+    flash, and the like.
+
+
+
+  
+TO-DO
+=====
+Create a way for users to upload stylesheets and javascripts (maybe even many in
+a zipped file) and unpack them into the db.
+
+Improve caching (I'd like to see a scenario where files are cached on save (or
+even just Rails page caching.  Maintaining a server-ready cache that bypasses
+ruby wouldn't be all that hard for these items.).
+
+Create <r:stylesheet> (or maybe <r:text_asset>) tag to let users reference
+stylesheets from pages, snippets, and layouts.
+
+Create a tagging mechanism for combining stylesheets or scripts into a single
+file to reduce the number of requests and speed serving.
+
+Figure out what the core team needs to get this puppy baked in with Radiant!
