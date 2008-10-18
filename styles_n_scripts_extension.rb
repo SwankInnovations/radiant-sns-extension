@@ -6,7 +6,7 @@ include CustomSettings
 
 
 class StylesNScriptsExtension < Radiant::Extension
-  version "0.2.1"
+  version "0.2.2"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
 
@@ -43,7 +43,18 @@ class StylesNScriptsExtension < Radiant::Extension
   def activate
     admin.tabs.add "CSS", "/admin/css", :after => "Layouts", :visibility => [:admin, :developer]
     admin.tabs.add "JS", "/admin/js", :after => "CSS", :visibility => [:admin, :developer]
-  end
+
+    # join already observed models with forum extension models 
+    observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript] 
+
+    # update list of observables 
+    UserActionObserver.send :observe, observables 
+
+    # connect UserActionObserver with my models 
+    UserActionObserver.instance.send :add_observer!, Stylesheet 
+    UserActionObserver.instance.send :add_observer!, Javascript 
+  end 
+
 
 
   def deactivate

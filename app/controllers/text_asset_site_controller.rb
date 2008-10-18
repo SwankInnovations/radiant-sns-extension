@@ -40,7 +40,7 @@ class TextAssetSiteController < SiteController
         # set the last modified date based on updated_at time for the asset
         # we can do this as long as there is no dynamic content in the assets
         response.headers['Last-Modified'] = @text_asset.updated_at
-        response.body = @text_asset.content
+        response.body = @text_asset.render
 
         # for text_assets, we cache no matter what (there's no status setting for them)
         text_asset_cache.cache_response(url, response) if request.get?

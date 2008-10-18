@@ -4,7 +4,7 @@
 <h1>Edit <%= proper_model_name %></h1>
 <% end -%>
 
-<form method="post" action="">
+<% form_tag do %>
   <%= hidden_field(model_name, "lock_version") %>
   <div class="form-area">
     <p class="title">
@@ -25,6 +25,6 @@
   <p class="buttons">
   <%= submit_tag(@text_asset.new_record? ? "Create #{proper_model_name}" : 'Save Changes', :class => 'button') %> <%= save_model_and_continue_editing_button(@text_asset) %> or <%= link_to("Cancel", send("#{model_name}_index_url") ) %>
   </p>
-</form>
+<% end %>
 
 <%= focus("#{model_name}_filename") %>
