@@ -8,7 +8,7 @@ class JavascriptsScenario < Scenario::Base
   helpers do
 
     def create_javascript(filename, attributes={})
-      create_model :javascript, 
+      create_model :javascript,
                     filename.symbolize,
                     javascript_params(
                         attributes.reverse_merge(:filename => filename) )
@@ -17,7 +17,7 @@ class JavascriptsScenario < Scenario::Base
 
     def javascript_params(attributes={})
       filename = attributes[:filename] || unique_javascript_filename
-      { 
+      {
         :filename => filename,
         :content => "javascript content for #{filename}"
       }.merge(attributes)

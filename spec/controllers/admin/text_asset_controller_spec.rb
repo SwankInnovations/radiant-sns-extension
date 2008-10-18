@@ -21,7 +21,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 ].each do |current_asset|
 
-  describe "For #{current_asset[:name].pluralize},", Admin::TextAssetController do
+  describe "For #{current_asset[:name].pluralize}, the", Admin::TextAssetController do
 
     integrate_views
 
@@ -35,7 +35,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
     scenario :users, :javascripts if current_asset[:name] == 'javascript'
 
     test_helper :caching
-  
+
     before :each do
       login_as :developer
       @cache = @controller.cache = FakeResponseCache.new
@@ -48,39 +48,45 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
 
+    # The :upload action is an addtion to the AbstractModelController
     [:index, :new, :edit, :remove, :upload].each do |action|
-
-      # moved this test into the actions as the controller inits this before each action
-      it "should have a model_class of #{current_asset[:name]}" do
-        controller.class.model_class.should == current_asset[:class]
-      end
-
 
       describe "#{action} action" do
 
-        it "should require login to access the #{action} action" do
+        # Different than the AbstractModelController, ours initializes the model
+        # class just prior to each action.  So it gets spec'ed for each action.
+        it "should handle #{current_asset[:name].titlecase.pluralize}" do
+          controller.class.model_class.should == current_asset[:class]
+        end
+
+
+        it "should require login to access" do
           logout
-          lambda { get action }.should require_login
+          lambda { get action, :asset_type => current_asset[:name] }.
+              should require_login
         end
 
 
         it "should allow access to developers" do
-          lambda { get action, :id => text_asset_id('main'),
-                               :asset_type => current_asset[:name] }.should 
-              restrict_access(:allow => [users(:developer)])
+          lambda { get action,
+                   :id => text_asset_id('main'),
+                   :asset_type => current_asset[:name] }.
+              should restrict_access(:allow => [users(:developer)])
         end
 
 
         it "should allow access to admins" do
-          lambda { get action, :id => text_asset_id('main'),
-                               :asset_type => current_asset[:name]}.should
-              restrict_access(:allow => [users(:admin)])
+          lambda { get action,
+                   :id => text_asset_id('main'),
+                   :asset_type => current_asset[:name]}.
+              should restrict_access(:allow => [users(:admin)])
         end
 
 
         it "should deny non-developers and non-admins" do
-          lambda { get action,:asset_type => current_asset[:name] }.should 
-              restrict_access(:deny => [users(:non_admin), users(:existing)])
+          lambda { get action, :asset_type => current_asset[:name] }.
+              should restrict_access(:deny => [users(:non_admin),
+                                               users(:existing)])
         end
 
       end
@@ -238,7 +244,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
       describe "via GET" do
 
         before :each do
-          get :edit, 
+          get :edit,
               :id => text_asset_id('main'),
               :asset_type => current_asset[:name]
         end

@@ -1,6 +1,6 @@
 class Admin::TextAssetController < Admin::AbstractModelController
 
-  only_allow_access_to :index, :new, :edit, :remove,
+  only_allow_access_to :index, :new, :edit, :remove, :upload,
     :when => [:developer, :admin],
     :denied_url => { :controller => 'page', :action => 'index' },
     :denied_message => 'You must have developer or administrator privileges to perform this action.'
@@ -61,9 +61,9 @@ class Admin::TextAssetController < Admin::AbstractModelController
         responds_to_parent do
           render :update do |page|
             # populate errors in the errors popup and call method to show
-            page.replace_html "errors_for_#{model_name}", 
-                '<ul class="uploadErrors">' + 
-                @text_asset.errors.collect{|k,v| 
+            page.replace_html "errors_for_#{model_name}",
+                '<ul class="uploadErrors">' +
+                @text_asset.errors.collect{|k,v|
                   %{<li class="warning">#{k.humanize.titlecase}: #{v}</li>}
                 }.to_s +
                 '</ul>'
@@ -72,9 +72,12 @@ class Admin::TextAssetController < Admin::AbstractModelController
         end
 
       else  # success!
+        # AbstractController methods aren't available within parent/render
+        # blocks so call #model_index_url now to use from inside
+        index_url = model_index_url
         responds_to_parent do
-          render :update do |page| 
-            page.redirect_to(:action => 'index')
+          render :update do |page|
+            page.redirect_to index_url
           end
         end
 

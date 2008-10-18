@@ -1,5 +1,4 @@
 module StylesNScripts
-
   class Config
 
     # stores the default values for the settings
@@ -7,8 +6,7 @@ module StylesNScripts
     @defaults = { 'stylesheet_directory' => 'css',
                   'javascript_directory' => 'js',
                   'stylesheet_mime_type' => 'text/css',
-                  'javascript_mime_type' => 'text/javascript',
-                  'response_cache_directory' => 'text_asset_cache'
+                  'javascript_mime_type' => 'text/javascript'
                 }
 
     @@live_config = {}
@@ -26,9 +24,10 @@ module StylesNScripts
         key = key.to_s
         validate_key(key)
         if @@live_config[key].blank?
-          @@live_config[key] = Radiant::Config[key]
+          return @defaults[key] unless Radiant::Config.table_exists?
+          @@live_config[key] = Radiant::Config["SnS.#{key}"]
           if @@live_config[key].blank?
-            @@live_config[key] = Radiant::Config[key] = @defaults[key]
+            @@live_config[key] = Radiant::Config["SnS.#{key}"] = @defaults[key]
           end
         end
         @@live_config[key]
@@ -38,27 +37,30 @@ module StylesNScripts
       # Setter for Config key/value pairs.  Keys must be limited to valid
       # settings for the extension.
       def []=(key, value)
+        validate_key(key)
+        return unless Radiant::Config.table_exists?
         # key must be in the form of a string for Radiant:Config
         key = key.to_s
 
         case key
-          when 'response_cache_directory'
-            value = validate_cache_directory(value, key)
           when /_directory$/
             value = validate_directory(value, key)
+            @@live_config[key] = Radiant::Config["SnS.#{key}"] = value
           when /_mime_type$/
             validate_mime_type(value, key)
+            @@live_config[key] = Radiant::Config["SnS.#{key}"] = value
+            TextAssetResponseCache.instance.clear
         end
+      end
 
-        @@live_config[key] = Radiant::Config[key] = value
+
+      def to_hash
+        Hash[*@defaults.keys.map { |key| [key, self[key]] }.flatten]
       end
 
 
       def restore_defaults
-        @defaults.each do |key, value|
-          Radiant::Config[key] = value
-        end
-        @@live_config = {}
+        @defaults.each { |key, value| self[key] = value }
       end
 
 
@@ -66,30 +68,22 @@ module StylesNScripts
 
         # determines whether 'key' matches one of the keys in @defaults (
         def validate_key(key)
-          raise("invalid setting name: #{key.inspect}") unless @defaults.has_key?(key)
-        end
-
-
-        def validate_cache_directory(directory, directory_label)
-          raise("invalid #{directory_label} value: #{directory.inspect}") unless directory =~ %r{\A/?[-_A-Za-z0-9]*/?\Z}
-          # return value with leading/trailing slashes removed
-          directory.gsub(/^\//, '').gsub(/\/$/, '')
+          raise(%{Invalid setting name: "#{key}"}) unless @defaults.has_key?(key.to_s)
         end
 
 
         def validate_directory(directory, directory_label)
-          raise("invalid #{directory_label} value: #{directory.inspect}") unless directory =~ %r{\A/?[-_A-Za-z0-9]+(/[-_A-Za-z0-9]+)*/?\Z}
+          raise(%{Invalid #{directory_label} value: "#{directory}"}) unless directory =~ %r{\A/?[-_A-Za-z0-9]+(/[-_A-Za-z0-9]+)*/?\Z}
           # return value with leading/trailing slashes removed
-          directory.gsub(/^\//, '').gsub(/\/$/, '')
+          directory.gsub(/^\/+/, '').gsub(/\/+$/, '')
         end
 
 
         def validate_mime_type(mime_type, mime_type_label)
-          raise("invalid #{mime_type_label} value: #{mime_type.inspect}") unless mime_type =~ %r{\A[-.A-Za-z0-9]+(/[-.A-Za-z0-9]+)*\Z}
+          raise(%{Invalid #{mime_type_label} value: "#{mime_type}"}) unless mime_type =~ %r{\A[-.A-Za-z0-9]+(/[-.A-Za-z0-9]+)*\Z}
         end
 
     end
 
   end
-
 end

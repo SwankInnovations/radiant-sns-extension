@@ -51,18 +51,21 @@ describe TextAssetResponseCache do
   end
 
 
-  it 'should have its default directory equal to StylesNScripts::Config setting' do
-    # change the config setting, re-init the TextAssetResponseCache (a Singleton)
-    # and make sure it slurped up the new setting.
-    StylesNScripts::Config[:response_cache_directory] = 'foo'
+  it 'should set cache location to: RAILS_ROOT/TEXT_ASSET_CACHE_DIR' do
+    with_warnings_suppressed{TEXT_ASSET_CACHE_DIR = 'another_cache_location'}
     Singleton.send :__init__, TextAssetResponseCache
-    TextAssetResponseCache.instance.defaults[:directory].should == "#{RAILS_ROOT}/foo"
+    TextAssetResponseCache.instance.defaults[:directory].
+        should == "#{RAILS_ROOT}/another_cache_location"
+  end
 
-    # reset the config settings, re-init the TextAssetResponseCache (a Singleton)
-    # and make sure it aquired the default setting this time.
-    StylesNScripts::Config.restore_defaults
-    Singleton.send :__init__, TextAssetResponseCache
-    TextAssetResponseCache.instance.defaults[:directory].should == "#{RAILS_ROOT}/text_asset_cache"
+
+  ['/cache_dir', 'cache_dir/', '/cache_dir/', '//cache_dir//'].each do |dir|
+    it "should tolerate TEXT_ASSET_CACHE_DIR values with leading or trailing slashes (i.e. #{dir.inspect})" do
+      with_warnings_suppressed{TEXT_ASSET_CACHE_DIR = dir}
+      Singleton.send :__init__, TextAssetResponseCache
+      TextAssetResponseCache.instance.defaults[:directory].
+          should == "#{RAILS_ROOT}/cache_dir"
+    end
   end
 
 
@@ -81,9 +84,9 @@ describe TextAssetResponseCache do
       @cache.cache_response(url, response)
       name = "#{@dir}/test/me.yml"
       File.exists?(name).should == true
-      file(name).should == "--- \nexpires: 2007-02-08 17:37:09 Z\nheaders: \n  Last-Modified: Tue, 27 Feb 2007 06:13:43 GMT\n" 
+      file(name).should == "--- \nexpires: 2007-02-08 17:37:09 Z\nheaders: \n  Last-Modified: Tue, 27 Feb 2007 06:13:43 GMT\n"
       data_name = "#{@dir}/test/me.data"
-      file(data_name).should == "content" 
+      file(data_name).should == "content"
     end
   end
 
@@ -105,4 +108,13 @@ private
 
   def response(*args)
     TestResponse.new(*args)
+  end
+
+
+  def with_warnings_suppressed
+    old_verbosity = $-v
+    $-v = nil
+    yield
+  ensure
+    $-v = old_verbosity
   end

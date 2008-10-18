@@ -16,7 +16,7 @@ describe UserActionObserver do
     Stylesheet.create!(stylesheet_params).created_by.should == @user
   end
 
-  
+
   it 'should observe javascript creation' do
     Javascript.create!(javascript_params).created_by.should == @user
   end

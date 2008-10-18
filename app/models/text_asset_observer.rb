@@ -1,6 +1,6 @@
 class TextAssetObserver < ActiveRecord::Observer
   observe Stylesheet, Javascript
-  
+
   def after_save(model)
     update_dependencies(model, model.updated_at)
     update_other_dependants(model, model.updated_at)

@@ -30,7 +30,40 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
     describe "upload action" do
-      
+#
+#      it "should require login to access" do
+#        logout
+#        lambda { get :upload, :asset_type => current_asset[:name] }.
+#            should require_login
+#      end
+#
+#
+#      it "should allow access to developers" do
+#        lambda { get :upload,
+#                     :id => text_asset_id('main'),
+#                     :asset_type => current_asset[:name] }.
+#            should restrict_access(:allow => [users(:developer)])
+#      end
+#
+#
+#      it "should allow access to admins" do
+#        lambda { get :upload,
+#                     :id => text_asset_id('main'),
+#                     :asset_type => current_asset[:name]}.
+#            should restrict_access(:allow => [users(:admin)])
+#      end
+#
+#
+#      it "should deny non-developers and non-admins" do
+#        lambda { get :upload,
+#                     :asset_type => current_asset[:name] }.
+#            should restrict_access(:deny => [users(:non_admin),
+#                                             users(:existing)])
+#      end
+
+
+
+
       describe "via GET" do
 
         before :each do
@@ -55,13 +88,13 @@ require File.dirname(__FILE__) + '/../../spec_helper'
       describe "via POST" do
 
         describe "with no file in the params" do
-        
+
           before :each do
             post :upload,
                  :asset_type => current_asset[:name]
           end
 
-          
+
           it "should return a 'Bad Request (400) Error'" do
             response.response_code.should == 400
           end
@@ -209,17 +242,17 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
           it "should redirect the parent window to the index page" do
             url = send("#{current_asset[:name]}_index_url", :only_path => true)
-            js_regexp = %r{window.location.href = ['"]#{url}['"][;]}
+            js_regexp = %r{window.location.href = ['"][^'"]*#{url}['"][;]}
             assert_select_parent { |script|
               script.should match(js_regexp)
             }
           end
 
 
-          it "should create a new current_asset[:name] based on the uploaded file" do
+          it "should create a new #{current_asset[:name]} based on the uploaded file" do
             # filename should be hypenated (where appropriate)
-            current_asset[:class].find_by_filename('hello-world.txt').content.should
-                be("Hello World! (text file)")
+            current_asset[:class].find_by_filename('hello-world.txt').content.
+                should eql("Hello World! (text file)")
           end
 
         end
@@ -240,7 +273,7 @@ private
     uploader = file_class.new
     uploader.original_path = filename
     uploader.content_type = type
-    
+
     def uploader.read
       File.read(original_path)
     end

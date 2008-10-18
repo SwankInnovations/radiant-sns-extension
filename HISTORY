@@ -1,6 +1,43 @@
-v0.4.1  Bug fix. Last-Modified header was not reporting the date using a valid
-        HTTP format.  This is now spec'ed and fixed.  (Thanks to Jay Levitt for
-        identifying this issue).
+v0.5    Lots of improvements here.  Some new features some just refactoring.
+        
+        Added Shards to the edit view so now this extension can be extended
+        (watch for SnS extension extensions to come soon).
+        
+        Added support for filters.  The only real one planned is Sass for the
+        CSS files but, the way I did it, it's pretty extensible (based on how
+        Radiant handles page content filters).  Did I mention that there were
+        some SnS extension extensions coming soon...
+        
+        Changed the way stylesheet and javascript urls were routed and evaluated
+        (now its a before_filter hooked into SiteController's show_page method).
+        This has the added bonus of allowing the stylesheet and javascript
+        directories to be changed during runtime (see next point).
+        
+        Configurations are now handled differently.  Rather than setting them
+        once at load-time, they are changed dynamically via Rake tasks.  The
+        only exception is the caching directory -- you really don't want to do
+        that one dynamcially -- so it's been pulled out of the config and made a
+        constant.
+        
+        Caching is more better.  No more caching the whole url path -- just the
+        file, thank you.  This makes it possible to change the directory name
+        on the fly.
+            
+        Bug fixes:
+          * Added a 'url' definition (just "") to the extension to fix an issue
+            with a change in Radiant 0.6.7 behavior (I really shoulda done that
+            all along).
+            
+          * Corrected an issue where this extension is included as part of a new
+            Radiant install.  The RAKE db:bootstrap task would initialize the
+            extension which would then try to write the default settings to a
+            not-yet-existing config table.
+
+
+v0.4.1  Bug fixes:
+          * Last-Modified header was not reporting the date using a valid
+            HTTP format.  This is now spec'ed and fixed.  (Thanks to Jay Levitt
+            for identifying this issue).
 
 
 v0.4    File Uploading!  You can now upload Javascripts or Stylesheets from the
@@ -52,17 +89,19 @@ v0.3    Big new features plus code refactoring and a bug fix.  First, the new
         adding the form helper to the remove.html.erb template.
             
             
-v0.2.2  Bugfix - I added the UserActionObserver behavior and accompanying specs
-        to the Stylesheet and Javascript models 
+v0.2.2  Bug fixes:
+          * I added the UserActionObserver behavior and accompanying specs
+            to the Stylesheet and Javascript models 
 
 
-v0.2.1  Bugfix - I corrected the ActionController::InvalidAuthenticityToken that
-        comes from my not using the form helpers in my templates.  I also weakly
-        spec-ed it.
+v0.2.1  Bug fixes:
+          * I corrected the ActionController::InvalidAuthenticityToken that
+            comes from my not using the form helpers in my templates.  I also
+            weakly spec-ed it.
         
-        NOTE: This was only a partial fix.  I corrected the edit.html.erb
-        template but not the remove.html.erb one.  See v0.3 for the completely
-        fixed version.
+            NOTE: This was only a partial fix.  I corrected the edit.html.erb
+            template but not the remove.html.erb one.  See v0.3 for the 
+            completely fixed version.
 
 
 v0.2    Initial public release.  Complete rebuild of the extension to work with

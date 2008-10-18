@@ -1,14 +1,19 @@
+# TEXT_ASSET_CACHE_DIR stores directory where text assets will be cached 
+# (relative to RAILS_ROOT). The default value is: "text_asset_cache"
+#
+# NOTE: If you change this, don't forget to remove any previous cache folder
+TEXT_ASSET_CACHE_DIR = "text_asset_cache"
+
 # Uncomment this if you reference any of your controllers in activate
 require_dependency 'application'
-
-# allows admins to customize settings for the extension:
-include CustomSettings
+require 'ostruct'
 
 
 class StylesNScriptsExtension < Radiant::Extension
-  version "0.4.1"
+  version "0.5"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
+  url ""
 
 
   define_routes do |map|
@@ -20,7 +25,7 @@ class StylesNScriptsExtension < Radiant::Extension
       controller.stylesheet_remove  'admin/css/remove/:id',   :action => 'remove'
       controller.stylesheet_upload  'admin/css/upload',       :action => 'upload'
     end
-    
+
     # Admin javascript Routes
     map.with_options(:controller => 'admin/text_asset', :asset_type => 'javascript') do |controller|
       controller.javascript_index   'admin/js',               :action => 'index'
@@ -29,17 +34,6 @@ class StylesNScriptsExtension < Radiant::Extension
       controller.javascript_remove  'admin/js/remove/:id',    :action => 'remove'
       controller.javascript_upload  'admin/js/upload',        :action => 'upload'
     end
-
-    # Public side routes (for JS and CSS directories)
-    map.connect "#{StylesNScripts::Config[:stylesheet_directory]}/*filename",
-                :controller => 'text_asset_site', :action => 'show_text_asset',
-                :directory => StylesNScripts::Config[:stylesheet_directory],
-                :asset_type => 'stylesheet'
-
-    map.connect "#{StylesNScripts::Config[:javascript_directory]}/*filename",
-                :controller => 'text_asset_site', :action => 'show_text_asset',
-                :directory => StylesNScripts::Config[:javascript_directory],
-                :asset_type => 'javascript'
   end
 
 
@@ -47,22 +41,26 @@ class StylesNScriptsExtension < Radiant::Extension
     admin.tabs.add "CSS", "/admin/css", :after => "Layouts", :visibility => [:admin, :developer]
     admin.tabs.add "JS", "/admin/js", :after => "CSS", :visibility => [:admin, :developer]
 
-    Page.send :include, ExtendedPageTags
+    # Include my mixins (extending PageTags and SiteController)
+    Page.send :include, PageTagMixins
+    SiteController.send :include, SiteControllerMixins
 
-    # join already observed models with extension models 
-    observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript] 
+    Radiant::AdminUI.class_eval do
+      attr_accessor :text_asset
+    end
+    admin.text_asset = load_default_text_asset_regions
 
-    # update list of observables 
-    UserActionObserver.send :observe, observables 
+    
+    # Add Javascript and Stylesheet to UserActionObserver (used for updated_at and updated_by)
+    observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript]
+    UserActionObserver.send :observe, observables
+    UserActionObserver.instance.send :add_observer!, Stylesheet
+    UserActionObserver.instance.send :add_observer!, Javascript
 
-    # connect UserActionObserver with my models 
-    UserActionObserver.instance.send :add_observer!, Stylesheet 
-    UserActionObserver.instance.send :add_observer!, Javascript 
-
-    # activate TextAssetObserver (can't be set via config.active_record.observer)
+    # Activate TextAssetObserver (can't be set via config.active_record.observer)
     TextAssetObserver.instance.send :add_observer!, Stylesheet
     TextAssetObserver.instance.send :add_observer!, Javascript
-  end 
+  end
 
 
   def deactivate
@@ -70,4 +68,19 @@ class StylesNScriptsExtension < Radiant::Extension
     admin.tabs.remove "JS"
   end
 
+
+  private
+
+    # Defines this extension's default regions (so that we can incorporate shards
+    # into its views).
+    def load_default_text_asset_regions
+      returning OpenStruct.new do |text_asset|
+        text_asset.edit = Radiant::AdminUI::RegionSet.new do |edit|
+          edit.main.concat %w{edit_header edit_form}
+          edit.form.concat %w{edit_title edit_content edit_timestamp}
+          edit.content_bottom.concat %w{edit_filter}
+          edit.form_bottom.concat %w{edit_buttons}
+        end
+      end
+    end
 end

@@ -8,7 +8,7 @@ class StylesheetsScenario < Scenario::Base
   helpers do
 
     def create_stylesheet(filename, attributes={})
-      create_model :stylesheet, 
+      create_model :stylesheet,
                     filename.symbolize,
                     stylesheet_params(
                         attributes.reverse_merge(:filename => filename) )
@@ -17,7 +17,7 @@ class StylesheetsScenario < Scenario::Base
 
     def stylesheet_params(attributes={})
       filename = attributes[:filename] || unique_stylesheet_filename
-      { 
+      {
         :filename => filename,
         :content => "stylesheet content for #{filename}"
       }.merge(attributes)

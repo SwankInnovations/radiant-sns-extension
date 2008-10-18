@@ -1,5 +1,5 @@
 class TextAssetContext < Radius::Context
-  
+
   def initialize(text_asset)
     @show_errors = true
     super()
@@ -36,5 +36,5 @@ class TextAssetContext < Radius::Context
     def raise_errors?
       RAILS_ENV != 'production' && @show_errors
     end
-    
+
 end

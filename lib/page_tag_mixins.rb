@@ -1,4 +1,4 @@
-module ExtendedPageTags
+module PageTagMixins
   include Radiant::Taggable
   class TagError < StandardError; end
 
@@ -16,24 +16,24 @@ module ExtendedPageTags
 
   ].each do |current_tag|
     desc %{
-    Renders the content from or a reference to the #{current_tag[:name]} 
+    Renders the content from or a reference to the #{current_tag[:name]}
     specified in the @name@ attribute. Additionally, the @as@ attribute can be
     used to make the tag render as one of the following:
-  
+
       * @content@ - renders the #{current_tag[:name]}'s content (this is the
         default when the @as@ attribute is omitted).
-  
-      * @inline@ - wraps the #{current_tag[:name]}'s content in an (X)HTML 
+
+      * @inline@ - wraps the #{current_tag[:name]}'s content in an (X)HTML
         @<#{current_tag[:inline_tag]}>@ element.
-        
+
       * @url@ - the url to the #{current_tag[:name]} (relative to the web root).
-  
+
       * @link@ - embeds the url in an (X)HTML @<#{current_tag[:link_tag]}>@
         element (creating a link to the external #{current_tag[:name]}).
-  
-  
+
+
     *Additional Options:*
-    When rendering @as@="@inline@" or @as@="@link@", the (X)HTML @type@ attribute 
+    When rendering @as@="@inline@" or @as@="@link@", the (X)HTML @type@ attribute
     is automatically be set to the default #{current_tag[:name]} content-type.
     You can overrride this attribute or add additional ones by passing extra
     attributes to the @<r:#{current_tag[:name]}>@ tag. For example,
@@ -44,8 +44,8 @@ module ExtendedPageTags
   Your #{current_tag[:name]}'s content here...
 //]]>
 </#{current_tag[:inline_tag]}></code></pre>
-     
-      *Usage:* 
+
+      *Usage:*
       <pre><code><r:#{current_tag[:name]} name="#{current_tag[:sample_file]}" [as="content | inline | url | link"] [other attribues...] /></code></pre>
     }
     tag(current_tag[:name]) do |tag|

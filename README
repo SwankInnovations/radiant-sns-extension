@@ -6,8 +6,7 @@ stored in pages.
 
 
 
-CONTENTS
-========
+== CONTENTS
 In this README you'll find:
   1. Usage
   2. Why Change Things?
@@ -16,8 +15,7 @@ In this README you'll find:
 
 
 
-USAGE
-=====
+== USAGE
 Using this extension is rather painless.  If you can use the rest of Radiant,
 using these additions should feel obvious.  There are a couple of things to take
 note of, however.
@@ -39,14 +37,19 @@ note of, however.
     time -- viola, now Radiant offers asset packaging just like Rails! (And the
     caching mechanism is smart enough to keep track of your file's dependencies)
 
+  * There are 4 settings that can be changed via Rake "config" task (see
+    Rake -T for usage):
+      - stylesheet_directory
+      - javascript_directory
+      - stylesheet_mime_type
+      - javascript_mime_type
 
 That's it.  Everything else is either too obvious to bother with here or
 automagical and/or too top secret to disclose ;-).
 
 
 
-WHY CHANGE THINGS?
-==================
+== WHY CHANGE THINGS?
 As John sees it, the pages tab is for storing your main content. (Think of the
 tree view as the list of available destinations for your users.  Sure, they need
 stylesheets and javascripts, but those are supporting files -- much like images
@@ -79,8 +82,7 @@ There are a number of interesting benefits gained by this approach:
 
 
 
-INSTALLATION
-============
+== INSTALLATION
 1.  Copy this extension into your existing Radiant project (place it at:
       [your project location]/vendor/extensions/styles_n_scripts
 
@@ -96,17 +98,18 @@ INSTALLATION
 4.  (Optional) Configure your stylesheet and javascript directories.  By default
     The Styles 'n Scripts serves your stylesheets and javascripts out of the
     /css and /js folders respectively.  You can change these locations via the
-    custom_settings.rb file if you wish (just make sure you aren't competing
-    with Radiant's /public files or your own pages.
+    "config" rake task:
+      rake radiant:extensions:styles_n_scripts:config
 
 5.  (Optional) Configure your stylesheet and javascript content (MIME) types.
-    Again there are defaults but you can change them via the custom_settings.rb
-    file.
+    Again, you use the Rake "config" task.
+
+6.  (Optional) Set a different location for the cache directory.  This is set in
+    The styles_n_scripts_extension.rb file using TEXT_ASSET_CACHE_DIR 
 
 
 
-TO-DO
-=====
+== TO-DO
 Figure out what the core team needs to get this puppy baked into Radiant!
 
 Improve caching by just clearing JS files on JS file update (and CSS on

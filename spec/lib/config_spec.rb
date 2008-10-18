@@ -4,24 +4,24 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe StylesNScripts::Config do
-  
+
   it 'should not accept declarations for invalid setting names' do
-    lambda{StylesNScripts::Config['bogus setting name'] = "whatever"}.should
-      raise_error(RuntimeError,
-      'text asset response cache location is not settable'
-    )
+    lambda{StylesNScripts::Config['bogus name'] = "whatever"}.
+        should raise_error(RuntimeError, 'Invalid setting name: "bogus name"')
   end
 
 
   it 'should return known settings without having to query the database again' do
+    # How to test this??
   end
 
 
-  [ :stylesheet_directory, 
-    :javascript_directory, 
+
+
+  [ :stylesheet_directory,
+    :javascript_directory,
     :stylesheet_mime_type,
-    :javascript_mime_type,
-    :response_cache_directory
+    :javascript_mime_type
   ].each do |setting_name|
     describe setting_name do
 
@@ -39,13 +39,15 @@ describe StylesNScripts::Config do
     end
   end
 
-  
+
+
+
   { :stylesheet_directory => 'css',
     :javascript_directory => 'js',
     :stylesheet_mime_type => 'text/css',
-    :javascript_mime_type => 'text/javascript',
-    :response_cache_directory => 'text_asset_cache'
+    :javascript_mime_type => 'text/javascript'
   }.each do |setting_name, default_value|
+
     describe setting_name do
 
       it "should set default value when starting with an empty db" do
@@ -62,17 +64,20 @@ describe StylesNScripts::Config do
       end
 
     end
+
   end
-  
-  
+
+
+
+
   # the following specs apply both to css and js directories...
   [:stylesheet_directory, :javascript_directory].each do |setting_name|
-    describe setting_name do
 
+    describe setting_name do
 
       # declare an array of values with alphanumeric-characters, iterate through each and test
       ['abc', 'ABC', 'aBc', 'AbC123'].each do |alpha_num_value|
-        it "should allow alphanumeric chars (like: #{alpha_num_value.inspect})" do
+        it "should allow alphanumeric chars (i.e. #{alpha_num_value.inspect})" do
           StylesNScripts::Config[setting_name] = alpha_num_value
           StylesNScripts::Config[setting_name].should eql(alpha_num_value)
         end
@@ -81,7 +86,7 @@ describe StylesNScripts::Config do
 
       # declare an array of values with slashes, iterate through each and test
       ['aBc-123', 'AbC_123', 'a-B_c-1_23'].each do |hyphen_underscore_value|
-        it "should allow hyphens, and/or underscores (like: #{hyphen_underscore_value.inspect})" do
+        it "should allow hyphens, and/or underscores (i.e. #{hyphen_underscore_value.inspect})" do
           StylesNScripts::Config[setting_name] = hyphen_underscore_value
           StylesNScripts::Config[setting_name].should eql(hyphen_underscore_value)
         end
@@ -90,7 +95,7 @@ describe StylesNScripts::Config do
 
       # declare an array of values with slashes, iterate through each and test
       ['aBc/123', 'Ab-C/1_23', 'a/B_c-1/2_3'].each do |slash_value|
-        it "should allow slashes (like: #{slash_value.inspect})" do
+        it "should allow slashes (i.e. #{slash_value.inspect})" do
           StylesNScripts::Config[setting_name] = slash_value
           StylesNScripts::Config[setting_name].should eql(slash_value)
         end
@@ -111,10 +116,10 @@ describe StylesNScripts::Config do
 
       # declare an array of invalid characters, inject them into valid values and test
       %w[! @ # $ % ^ & * ( ) { } < > + = ? , : ; ' " \\ \t \  \n \r \[ \]].each do |invalid_char|
-        it "should reject invalid characters (like:#{invalid_char.inspect})" do
+        it "should reject invalid characters (i.e. #{invalid_char.inspect})" do
           lambda{StylesNScripts::Config[setting_name] = "aBc#{invalid_char}123"}.should raise_error(
             RuntimeError,
-            "invalid #{setting_name} value: #{('aBc' + invalid_char + '123').inspect}"
+            %{Invalid #{setting_name} value: "#{('aBc' + invalid_char + '123')}"}
           )
         end
       end
@@ -122,25 +127,29 @@ describe StylesNScripts::Config do
 
       # declare an array of values with bad/multiple slashes, iterate through each and test
       ['//abc/123', 'abc/123//', '/abc///123/','abc\123'].each do |slash_value|
-        it "should reject invalid use of slashes (like: #{slash_value.inspect})" do
+        it "should reject invalid use of slashes (i.e. #{slash_value.inspect})" do
           lambda{StylesNScripts::Config[setting_name] = slash_value}.should raise_error(
             RuntimeError,
-            "invalid #{setting_name} value: #{(slash_value).inspect}"
+            %{Invalid #{setting_name} value: "#{(slash_value)}"}
           )
         end
       end
 
     end
+
   end
+
+
 
 
   # the following specs apply both to css and js mime_types...
   [:stylesheet_mime_type, :javascript_mime_type].each do |setting_name|
+
     describe setting_name do
-      
-      ['text/javascript', 'text/javascript1.0', 'text/x-javascript', 'text/css', 
+
+      ['text/javascript', 'text/javascript1.0', 'text/x-javascript', 'text/css',
        'application/x-ecmascript'].each do |mime_example|
-        it "should allow valid mime-types (like: #{mime_example.inspect})" do
+        it "should allow valid mime-types (i.e. #{mime_example.inspect})" do
           StylesNScripts::Config[setting_name] = mime_example
           StylesNScripts::Config[setting_name].should eql(mime_example)
         end
@@ -149,10 +158,10 @@ describe StylesNScripts::Config do
 
       # declare an array of invalid characters, inject them into valid values and test
       %w[! @ # $ % ^ & * ( ) { } < > + = ? , : ; ' " _ \\ \t \  \n \r \[ \]].each do |invalid_char|
-        it "should reject invalid characters (like: #{invalid_char.inspect})" do
+        it "should reject invalid characters (i.e. #{invalid_char.inspect})" do
           lambda{StylesNScripts::Config[setting_name] = "text/x-#{invalid_char}javascript"}.should raise_error(
             RuntimeError,
-            "invalid #{setting_name} value: #{('text/x-' + invalid_char + 'javascript').inspect}"
+            %{Invalid #{setting_name} value: "#{('text/x-' + invalid_char + 'javascript')}"}
           )
         end
       end
@@ -161,43 +170,12 @@ describe StylesNScripts::Config do
       it 'should reject mime-types ending in a "/"' do
           lambda{StylesNScripts::Config[setting_name] = "text/"}.should raise_error(
             RuntimeError,
-            "invalid #{setting_name} value: #{('text/').inspect}"
+            "Invalid #{setting_name} value: #{('text/').inspect}"
           )
       end
 
     end
-  end
-  
-  
-  describe 'response_cache_directory' do
-
-    # declare an array of values with alphanumeric-characters, iterate through each and test
-    ['abc', 'ABC', 'aBc', 'AbC123'].each do |alpha_num_value|
-      it "should allow a #{:response_cache_directory} with alphanumeric chars (#{alpha_num_value.inspect})" do
-        StylesNScripts::Config[:response_cache_directory] = alpha_num_value
-        StylesNScripts::Config[:response_cache_directory].should eql(alpha_num_value)
-      end
-    end
-
-
-    # declare an array of values with slashes, iterate through each and test
-    ['aBc-123', 'AbC_123', 'a-B_c-1_23'].each do |hyphen_underscore_value|
-      it "should allow hyphens, and/or underscores (like: #{hyphen_underscore_value.inspect})" do
-        StylesNScripts::Config[:response_cache_directory] = hyphen_underscore_value
-        StylesNScripts::Config[:response_cache_directory].should eql(hyphen_underscore_value)
-      end
-    end
-
-
-    # declare an array of invalid characters, inject them into valid values and test
-    %w[! @ # $ % ^ & * ( ) { } < > + = ? , : ; ' " \\ \t \  \n \r \[ \] /].each do |invalid_char|
-      it "should reject invalid characters (like:#{invalid_char.inspect})" do
-        lambda{StylesNScripts::Config[:response_cache_directory] = "aBc#{invalid_char}123"}.should raise_error(
-          RuntimeError,
-          "invalid response_cache_directory value: #{('aBc' + invalid_char + '123').inspect}"
-        )
-      end
-    end
 
   end
+
 end

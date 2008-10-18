@@ -1,0 +1,1 @@
+class JavascriptFilter < TextAssetFilter; end

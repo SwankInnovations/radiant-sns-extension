@@ -1,7 +1,9 @@
 class TextAssetResponseCache < ResponseCache
 
   def initialize(options={})
-    @@defaults[:directory] = "#{RAILS_ROOT}/#{StylesNScripts::Config[:response_cache_directory]}"
+    # Use TEXT_ASSET_CACHE_DIR but strip leading and trailing slashes (if any)
+    @@defaults[:directory] = RAILS_ROOT + '/' + 
+        TEXT_ASSET_CACHE_DIR.gsub(/^\/+/, '').gsub(/\/+$/, '')
     @@defaults[:expire_time] = 1.year
     super(options)
   end

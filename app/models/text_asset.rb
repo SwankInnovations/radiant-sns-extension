@@ -14,6 +14,8 @@ class TextAsset < ActiveRecord::Base
   # the following regexp uses \A and \Z rather than ^ and $ to enforce no "\n" characters
   validates_format_of :filename, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
 
+  object_id_attr :filter, TextAssetFilter
+
   include Radiant::Taggable
   class TagError < StandardError; end
 
@@ -38,6 +40,8 @@ class TextAsset < ActiveRecord::Base
   def render
     text = self.content
     text = parse(text)
+    text = self.filter.filter(text)
+    text
   end
 
 
@@ -55,7 +59,7 @@ class TextAsset < ActiveRecord::Base
     @text_asset = self.new
     if file.blank?
       @text_asset.errors.add(:uploaded_file, 'no file submitted for upload')
-      
+
     elsif !file.kind_of?(ActionController::UploadedFile)
       @text_asset.errors.add(:uploaded_file, 'unusable format')
 
@@ -74,8 +78,8 @@ class TextAsset < ActiveRecord::Base
 
   private
 
-    # Adds a tag named after the inheriting class name (so <r:javascript> or
-    # <r:stylesheet>.  This method is kind of funky since we wanted to define
+    # Adds a tag named after the inheriting class name (i.e. <r:javascript> or
+    # <r:stylesheet>).  This method is kind of funky since we wanted to define
     # the tag in only one place yet we don't have the inheriting class' name
     # until after initialization.
     def create_tags

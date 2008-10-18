@@ -143,7 +143,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @dependant = current_tag[:class].find_by_filename('dependant')
       @dependant.dependencies.effectively_updated_at.should == Time.gm(1998)
     end
-  
+
   end
 
 end

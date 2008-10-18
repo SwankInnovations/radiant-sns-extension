@@ -1,5 +1,5 @@
 # This specs the behavior of the Stylesheet and Javascript models where they
-# share much the same behavior (this is better than spec-ing the TextAsset model 
+# share much the same behavior (this is better than spec-ing the TextAsset model
 # since, frankly, we care about the Stylesheet and Javascript models, not their
 # parent).
 #
@@ -10,7 +10,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 [ Stylesheet, Javascript].each do |current_asset|
   describe current_asset do
-  
+
     before(:each) do
       @record = current_asset.new
     end
@@ -19,7 +19,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
     it 'should limit the filename to 100 characters' do
       @record.filename = 'a' * 100
       @record.should be_valid
-      
+
       @record.filename = 'a' * 101
       @record.should_not be_valid
     end
@@ -81,14 +81,14 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
     # declare an array of invalid characters then iterate through each and test
     (
-      %w[! @ # $ % ^ & * ( ) { } \ / < > + = ? , : ; ' "] + 
+      %w[! @ # $ % ^ & * ( ) { } \ / < > + = ? , : ; ' "] +
       [' ', "\t", "\n", "\r", '[', ']']
     ).each do |invalid_char|
       it "should not allow filenames with invalid characters (#{invalid_char.inspect})" do
         @record.filename = "abc#{invalid_char}123"
         @record.should_not be_valid
         @record.should have(1).error_on(:filename)
-        @record.errors.on(:filename).should == 'invalid format' 
+        @record.errors.on(:filename).should == 'invalid format'
       end
     end
 
