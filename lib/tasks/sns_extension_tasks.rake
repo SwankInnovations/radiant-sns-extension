@@ -1,7 +1,14 @@
 namespace :radiant do
   namespace :extensions do
     namespace :sns do
-
+      
+      desc "Runs migrations for SnS, and copies public assets.
+      Equivalent to running `rake radiant:extensions:sns:migrate` 
+      then `rake radiant:extensions:sns:update` consecutively."
+      task :install => [:environment, :migrate, :update] do
+        puts "The SnS extension has been successfully installed."
+      end
+      
       desc "Runs the migration of the SnS extension"
       task :migrate => :environment do
         require 'radiant/extension_migrator'
