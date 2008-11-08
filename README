@@ -90,22 +90,22 @@ There are a number of interesting benefits gained by this approach:
       rake db:migrate:extensions
 
     Or, if you prefer to be more specific to this extension:
-      rake radiant:extensions:styles_n_scripts:migrate
+      rake radiant:extensions:sns:migrate
 
 3.  Copy the needed images into Radiant's /public/images directory using:
-      rake radiant:extensions:styles_n_scripts:update
+      rake radiant:extensions:sns:update
 
 4.  (Optional) Configure your stylesheet and javascript directories.  By default
     The Styles 'n Scripts serves your stylesheets and javascripts out of the
     /css and /js folders respectively.  You can change these locations via the
     "config" rake task:
-      rake radiant:extensions:styles_n_scripts:config
+      rake radiant:extensions:sns:config
 
 5.  (Optional) Configure your stylesheet and javascript content (MIME) types.
     Again, you use the Rake "config" task.
 
 6.  (Optional) Set a different location for the cache directory.  This is set in
-    The styles_n_scripts_extension.rb file using TEXT_ASSET_CACHE_DIR 
+    The sns_extension.rb file using TEXT_ASSET_CACHE_DIR 
 
 
 
