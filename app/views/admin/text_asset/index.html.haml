@@ -40,7 +40,7 @@
           -# this next class is dumb but Radiant hard coded for the Snippet class so we'll just piggyback on that...
           %td.snippet 
             = image(model_name, :alt => "#{model_name}-icon", :title => text_asset.url)
-            %span= link_to(text_asset.filename, send("#{model_name}_edit_url", :id => text_asset), :title => text_asset.url)
+            %span= link_to(text_asset.name, send("#{model_name}_edit_url", :id => text_asset), :title => text_asset.url)
           %td.remove
             = link_to image('remove', :alt => "Remove #{proper_model_name}"), send("#{model_name}_remove_url", :id => text_asset)
     - else

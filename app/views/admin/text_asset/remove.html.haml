@@ -11,7 +11,7 @@
       -# this next class is dumb but Radiant hard coded for the Snippet class so we'll just piggyback on that...
       %td.snippet
         = image(model_name, :class => "icon", :alt => "#{model_name}-icon", :title => @text_asset.url)
-        %span.title= @text_asset.filename
+        %span.title= @text_asset.name
 
 - form_tag do
   %p.buttons

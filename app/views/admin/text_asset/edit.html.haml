@@ -12,8 +12,8 @@
         - render_region :form do |form|
           - form.edit_title do
             %p.title
-              %label{:for=>"#{model_name}_filename"} Filename
-              = text_field model_name, "filename", :class => 'textbox', :maxlength => 100
+              %label{:for=>"#{model_name}_name"} Name
+              = text_field model_name, "name", :class => 'textbox', :maxlength => 100
           - form.edit_content do
             %p.content
               %label{:for=>"#{model_name}_content"} Body
@@ -28,7 +28,7 @@
           - form.edit_timestamp do
             = updated_stamp @text_asset
     
-      = javascript_tag %{$("#{model_name}_filename").activate()}
+      = javascript_tag %{$("#{model_name}_name").activate()}
 
       - render_region :form_bottom do |form_bottom|
         - form_bottom.edit_buttons do
