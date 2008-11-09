@@ -158,7 +158,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
             post :new,
                  current_asset[:symbol] => send("#{current_asset[:name]}_params"),
                  :asset_type => current_asset[:name]
-            @text_asset = current_asset[:class].find_by_filename('Test')
+            @text_asset = current_asset[:class].find_by_name('Test')
           end
 
 
@@ -188,9 +188,9 @@ require File.dirname(__FILE__) + '/../../spec_helper'
           before :each do
             post :new,
                  current_asset[:symbol] => send("#{current_asset[:name]}_params",
-                                                  :filename => nil),
+                                                  :name => nil),
                  :asset_type => current_asset[:name]
-            @text_asset = current_asset[:class].find_by_filename('Test')
+            @text_asset = current_asset[:class].find_by_name('Test')
           end
 
 
@@ -219,10 +219,10 @@ require File.dirname(__FILE__) + '/../../spec_helper'
           before :each do
             post :new,
                  current_asset[:symbol] => send("#{current_asset[:name]}_params",
-                                                      :filename => 'Test'),
+                                                      :name => 'Test'),
                  :continue => 'Save and Continue Editing',
                  :asset_type => current_asset[:name]
-            @text_asset = current_asset[:class].find_by_filename('Test')
+            @text_asset = current_asset[:class].find_by_name('Test')
           end
 
 
@@ -314,7 +314,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
             post :edit,
                  :id => text_asset_id('main'),
                  current_asset[:symbol] => send("#{current_asset[:name]}_params",
-                                                      :filename => nil),
+                                                      :name => nil),
                  :asset_type => current_asset[:name]
           end
 
@@ -415,7 +415,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
         it "should destroy the #{current_asset[:name]}" do
-          current_asset[:class].find_by_filename('main').should be_nil
+          current_asset[:class].find_by_name('main').should be_nil
         end
 
 

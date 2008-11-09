@@ -7,19 +7,19 @@ class StylesheetsScenario < Scenario::Base
 
   helpers do
 
-    def create_stylesheet(filename, attributes={})
+    def create_stylesheet(name, attributes={})
       create_model :stylesheet,
-                    filename.symbolize,
+                    name.symbolize,
                     stylesheet_params(
-                        attributes.reverse_merge(:filename => filename) )
+                        attributes.reverse_merge(:name => name) )
     end
 
 
     def stylesheet_params(attributes={})
-      filename = attributes[:filename] || unique_stylesheet_filename
+      name = attributes[:name] || unique_stylesheet_name
       {
-        :filename => filename,
-        :content => "stylesheet content for #{filename}"
+        :name => name,
+        :content => "stylesheet content for #{name}"
       }.merge(attributes)
     end
 
@@ -42,11 +42,11 @@ class StylesheetsScenario < Scenario::Base
 
     private
 
-      @@unique_stylesheet_filename_call_count = 0
+      @@unique_stylesheet_name_call_count = 0
 
-      def unique_stylesheet_filename
-        @@unique_stylesheet_filename_call_count += 1
-        "stylesheet-#{@@unique_stylesheet_filename_call_count}.css"
+      def unique_stylesheet_name
+        @@unique_stylesheet_name_call_count += 1
+        "stylesheet-#{@@unique_stylesheet_name_call_count}.css"
       end
 
   end

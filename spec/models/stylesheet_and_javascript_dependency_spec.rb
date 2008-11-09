@@ -21,7 +21,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
   describe "During save, #{current_tag[:name].pluralize} containing <r:#{current_tag[:name]}> tags" do
 
     before :each do
-      @text_asset = current_tag[:class].new(:filename => 'dependant')
+      @text_asset = current_tag[:class].new(:name => 'dependant')
       @text_asset.content = %{<r:#{current_tag[:name]} name="main" />}
     end
 
@@ -67,7 +67,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
   describe "A saved #{current_tag[:name]}'s effectively_updated_at method" do
     before :each do
-      @dependant = current_tag[:class].new(:filename => 'dependant')
+      @dependant = current_tag[:class].new(:name => 'dependant')
       save_asset_at(@dependant, 1990)
     end
 
@@ -94,10 +94,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
       save_asset_at(@dependant, 1994)
 
-      @dependency = current_tag[:class].new(:filename => 'dependency')
+      @dependency = current_tag[:class].new(:name => 'dependency')
       save_asset_at(@dependency, 1995)
 
-      @dependant = current_tag[:class].find_by_filename('dependant')
+      @dependant = current_tag[:class].find_by_name('dependant')
       @dependant.dependencies.effectively_updated_at.should == Time.gm(1995)
     end
 
@@ -106,18 +106,18 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
       save_asset_at(@dependant, 1991)
 
-      @dependency = current_tag[:class].new(:filename => 'dependency')
+      @dependency = current_tag[:class].new(:name => 'dependency')
       save_asset_at(@dependency, 1995)
 
       save_asset_at(@dependant, 1999)
 
-      @dependant = current_tag[:class].find_by_filename('dependant')
+      @dependant = current_tag[:class].find_by_name('dependant')
       @dependant.dependencies.effectively_updated_at.should == Time.gm(1999)
     end
 
 
     it "should reflect a dependency's change date/time once that dependency is updated" do
-      @dependency = current_tag[:class].new(:filename => 'dependency')
+      @dependency = current_tag[:class].new(:name => 'dependency')
       save_asset_at(@dependency, 1990)
 
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
@@ -125,13 +125,13 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
       save_asset_at(@dependency, 1993)
 
-      @dependant = current_tag[:class].find_by_filename('dependant')
+      @dependant = current_tag[:class].find_by_name('dependant')
       @dependant.dependencies.effectively_updated_at.should == Time.gm(1993)
     end
 
 
     it "should reflect a dependency's deletion date/time when that dependency file is removed" do
-      @dependency = current_tag[:class].new(:filename => 'dependency')
+      @dependency = current_tag[:class].new(:name => 'dependency')
       save_asset_at(@dependency, 1996)
 
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
@@ -140,7 +140,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       Time.stub!(:now).and_return(Time.gm(1998))
       @dependency.destroy
 
-      @dependant = current_tag[:class].find_by_filename('dependant')
+      @dependant = current_tag[:class].find_by_name('dependant')
       @dependant.dependencies.effectively_updated_at.should == Time.gm(1998)
     end
 

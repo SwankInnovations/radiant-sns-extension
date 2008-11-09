@@ -250,8 +250,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
           it "should create a new #{current_asset[:name]} based on the uploaded file" do
-            # filename should be hypenated (where appropriate)
-            current_asset[:class].find_by_filename('hello-world.txt').content.
+            # name should be hypenated (where appropriate)
+            current_asset[:class].find_by_name('hello-world.txt').content.
                 should eql("Hello World! (text file)")
           end
 
@@ -269,9 +269,9 @@ end
 private
 
   def mock_uploader(file, type = 'text/plain', file_class = ActionController::UploadedStringIO)
-    filename = "%s/%s" % [ File.dirname(__FILE__) + '/../../fixtures', file ]
+    name = "%s/%s" % [ File.dirname(__FILE__) + '/../../fixtures', file ]
     uploader = file_class.new
-    uploader.original_path = filename
+    uploader.original_path = name
     uploader.content_type = type
 
     def uploader.read

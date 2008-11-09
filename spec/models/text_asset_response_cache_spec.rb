@@ -111,8 +111,8 @@ end
 
 private
 
-  def file(filename)
-    open(filename) { |f| f.read } rescue ''
+  def file(name)
+    open(name) { |f| f.read } rescue ''
   end
 
 

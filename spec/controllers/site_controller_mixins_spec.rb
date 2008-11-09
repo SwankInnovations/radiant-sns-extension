@@ -178,8 +178,8 @@ describe SiteController, "(Extended)" do
       describe "with regard to Last-Modified date" do
 
         before :each do
-          @dependant = current_asset[:class].new(:filename => 'dependant')
-          @dependency = current_asset[:class].new(:filename => 'dependency')
+          @dependant = current_asset[:class].new(:name => 'dependant')
+          @dependency = current_asset[:class].new(:name => 'dependency')
           save_asset_at(@dependant, 1990)
         end
 

@@ -16,65 +16,65 @@ require File.dirname(__FILE__) + '/../spec_helper'
     end
 
 
-    it 'should limit the filename to 100 characters' do
-      @record.filename = 'a' * 100
+    it 'should limit the name to 100 characters' do
+      @record.name = 'a' * 100
       @record.should be_valid
 
-      @record.filename = 'a' * 101
+      @record.name = 'a' * 101
       @record.should_not be_valid
     end
 
 
-    it 'should not allow an empty filename' do
-      @record.filename = ''
+    it 'should not allow an empty name' do
+      @record.name = ''
       @record.should_not be_valid
     end
 
 
-    it 'should require unique filenames (within same subclass)' do
-      @record.filename = 'abc.123'
+    it 'should require unique names (within same subclass)' do
+      @record.name = 'abc.123'
       @record.save!
 
-      @invalid_record = current_asset.new(:filename => 'abc.123')
+      @invalid_record = current_asset.new(:name => 'abc.123')
       @invalid_record.should_not be_valid
-      @invalid_record.should have(1).error_on(:filename)
-      @invalid_record.errors.on(:filename).should == 'filename already in use'
+      @invalid_record.should have(1).error_on(:name)
+      @invalid_record.errors.on(:name).should == 'name already in use'
     end
 
 
-    it 'should permit the same filename as a stylesheet and javascript' do
-      @record.filename = 'abc.123'
+    it 'should permit the same name as a stylesheet and javascript' do
+      @record.name = 'abc.123'
       @record.save!
 
       if current_asset == Stylesheet
-        @record_of_other_subclass = Javascript.new(:filename => 'abc.123')
+        @record_of_other_subclass = Javascript.new(:name => 'abc.123')
       elsif current_asset == Javascript
-        @record_of_other_subclass = Stylesheet.new(:filename => 'abc.123')
+        @record_of_other_subclass = Stylesheet.new(:name => 'abc.123')
       end
       @record_of_other_subclass.should be_valid
     end
 
 
-    it 'should allow filenames with alphanumeric chars, underscores, periods, & hyphens' do
-      @record.filename = 'abc'
+    it 'should allow names with alphanumeric chars, underscores, periods, & hyphens' do
+      @record.name = 'abc'
       @record.should be_valid
 
-      @record.filename = 'ABC'
+      @record.name = 'ABC'
       @record.should be_valid
 
-      @record.filename = 'Abc123'
+      @record.name = 'Abc123'
       @record.should be_valid
 
-      @record.filename = 'aBc.123'
+      @record.name = 'aBc.123'
       @record.should be_valid
 
-      @record.filename = 'aBc_123'
+      @record.name = 'aBc_123'
       @record.should be_valid
 
-      @record.filename = 'aBc-123'
+      @record.name = 'aBc-123'
       @record.should be_valid
 
-      @record.filename = 'a.B-c.1_2-3'
+      @record.name = 'a.B-c.1_2-3'
       @record.should be_valid
     end
 
@@ -84,28 +84,28 @@ require File.dirname(__FILE__) + '/../spec_helper'
       %w[! @ # $ % ^ & * ( ) { } \ / < > + = ? , : ; ' "] +
       [' ', "\t", "\n", "\r", '[', ']']
     ).each do |invalid_char|
-      it "should not allow filenames with invalid characters (#{invalid_char.inspect})" do
-        @record.filename = "abc#{invalid_char}123"
+      it "should not allow names with invalid characters (#{invalid_char.inspect})" do
+        @record.name = "abc#{invalid_char}123"
         @record.should_not be_valid
-        @record.should have(1).error_on(:filename)
-        @record.errors.on(:filename).should == 'invalid format'
+        @record.should have(1).error_on(:name)
+        @record.errors.on(:name).should == 'invalid format'
       end
     end
 
 
-    it 'should automatically sort by filename' do
-      @record.filename = 'a_is_for_apple'
+    it 'should automatically sort by name' do
+      @record.name = 'a_is_for_apple'
       @record.save!
 
       @record = current_asset.new
-      @record.filename = 'j_is_for_jacks'
+      @record.name = 'j_is_for_jacks'
       @record.save!
 
       @record = current_asset.new
-      @record.filename = 'c_is_for_chocolate_frosted_sugar_bombs'
+      @record.name = 'c_is_for_chocolate_frosted_sugar_bombs'
       @record.save!
 
-      current_asset.find(:all).should == current_asset.find(:all).sort_by { |item| item[:filename] }
+      current_asset.find(:all).should == current_asset.find(:all).sort_by { |item| item[:name] }
     end
 
   end

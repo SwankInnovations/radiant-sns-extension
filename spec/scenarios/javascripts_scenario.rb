@@ -7,19 +7,19 @@ class JavascriptsScenario < Scenario::Base
 
   helpers do
 
-    def create_javascript(filename, attributes={})
+    def create_javascript(name, attributes={})
       create_model :javascript,
-                    filename.symbolize,
+                    name.symbolize,
                     javascript_params(
-                        attributes.reverse_merge(:filename => filename) )
+                        attributes.reverse_merge(:name => name) )
     end
 
 
     def javascript_params(attributes={})
-      filename = attributes[:filename] || unique_javascript_filename
+      name = attributes[:name] || unique_javascript_name
       {
-        :filename => filename,
-        :content => "javascript content for #{filename}"
+        :name => name,
+        :content => "javascript content for #{name}"
       }.merge(attributes)
     end
 
@@ -42,11 +42,11 @@ class JavascriptsScenario < Scenario::Base
 
     private
 
-      @@unique_javascript_filename_call_count = 0
+      @@unique_javascript_name_call_count = 0
 
-      def unique_javascript_filename
-        @@unique_javascript_filename_call_count += 1
-        "javascript-#{@@unique_javascript_filename_call_count}.js"
+      def unique_javascript_name
+        @@unique_javascript_name_call_count += 1
+        "javascript-#{@@unique_javascript_name_call_count}.js"
       end
 
   end
