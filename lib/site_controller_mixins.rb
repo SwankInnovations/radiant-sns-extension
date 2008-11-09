@@ -40,21 +40,21 @@ module SiteControllerMixins
     end
 
 
-    def show_text_asset(filename, asset_type)
+    def show_text_asset(name, asset_type)
       response.headers.delete('Cache-Control')
-      cache_url = "#{asset_type}_cache/#{filename}"
+      cache_url = "#{asset_type}_cache/#{name}"
 
       if (request.get? || request.head?) and live? and (text_asset_cache.response_cached?(cache_url))
         text_asset_cache.update_response(cache_url, response, request)
         @performed_render = true
       else
-        show_uncached_text_asset(filename, asset_type, cache_url)
+        show_uncached_text_asset(name, asset_type, cache_url)
       end
     end
 
 
-    def show_uncached_text_asset(filename, asset_type, cache_url)
-      @text_asset = asset_type.camelcase.constantize.find_by_name(filename)
+    def show_uncached_text_asset(name, asset_type, cache_url)
+      @text_asset = asset_type.camelcase.constantize.find_by_name(name)
       mime_type = Sns::Config["#{asset_type}_mime_type"]
 
       unless @text_asset.nil?
