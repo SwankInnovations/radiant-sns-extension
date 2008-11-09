@@ -1,18 +1,18 @@
 class TextAsset < ActiveRecord::Base
   set_inheritance_column :class_name
 
-  order_by 'filename'
+  order_by 'name'
 
   # Associations
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
   has_one :dependencies, :class_name => 'TextAssetDependencies', :dependent => :destroy
 
-  validates_presence_of :filename, :message => 'required'
-  validates_length_of :filename, :maximum => 100, :message => '%d-character limit'
-  validates_uniqueness_of :filename, :scope => :class_name, :message => "filename already in use"
+  validates_presence_of :name, :message => 'required'
+  validates_length_of :name, :maximum => 100, :message => '%d-character limit'
+  validates_uniqueness_of :name, :scope => :class_name, :message => "name already in use"
   # the following regexp uses \A and \Z rather than ^ and $ to enforce no "\n" characters
-  validates_format_of :filename, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
+  validates_format_of :name, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
 
   object_id_attr :filter, TextAssetFilter
 
@@ -28,7 +28,7 @@ class TextAsset < ActiveRecord::Base
 
   def url
     "/" + Sns::Config["#{self.class.to_s.underscore}_directory"] +
-        "/" + self.filename
+        "/" + self.name
   end
 
 
@@ -67,7 +67,7 @@ class TextAsset < ActiveRecord::Base
       @text_asset.errors.add(:uploaded_file, 'file size larger than 256kB')
 
     else
-      @text_asset.filename = file.original_filename.gsub(/\s/, '-')
+      @text_asset.name = file.original_filename.gsub(/\s/, '-')
       @text_asset.content = file.read
       # everthing else passed so run through the std validations (save if valid)
       @text_asset.save
@@ -87,7 +87,7 @@ class TextAsset < ActiveRecord::Base
         tag(self.name.underscore) do |tag|
           if name = tag.attr['name']
             self.dependencies.list << tag.attr['name'].strip
-            if text_asset = self.class.find_by_filename(tag.attr['name'].strip)
+            if text_asset = self.class.find_by_name(tag.attr['name'].strip)
               text_asset.render
             else
               raise TagError.new("#{self.class.to_s.underscore} not found")

@@ -27,8 +27,8 @@ class TextAssetObserver < ActiveRecord::Observer
 
   def update_other_dependants(model, time)
     model.class.find(:all).each do |text_asset|
-      unless text_asset.filename == model.filename || text_asset.dependencies.list.empty?
-        if text_asset.dependencies.list.include?(model.filename)
+      unless text_asset.name == model.name || text_asset.dependencies.list.empty?
+        if text_asset.dependencies.list.include?(model.name)
           text_asset.dependencies.update_attribute('effectively_updated_at', time)
         end
       end

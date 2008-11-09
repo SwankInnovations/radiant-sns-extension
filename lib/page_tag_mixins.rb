@@ -50,7 +50,7 @@ module PageTagMixins
     }
     tag(current_tag[:name]) do |tag|
       if name = tag.attr['name']
-        if text_asset = current_tag[:class].find_by_filename(tag.attr['name'].strip)
+        if text_asset = current_tag[:class].find_by_name(tag.attr['name'].strip)
           case tag.attr['as']
             when 'content', nil
               text_asset.render

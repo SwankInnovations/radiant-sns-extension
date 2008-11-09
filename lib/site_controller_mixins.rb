@@ -54,7 +54,7 @@ module SiteControllerMixins
 
 
     def show_uncached_text_asset(filename, asset_type, cache_url)
-      @text_asset = asset_type.camelcase.constantize.find_by_filename(filename)
+      @text_asset = asset_type.camelcase.constantize.find_by_name(filename)
       mime_type = Sns::Config["#{asset_type}_mime_type"]
 
       unless @text_asset.nil?
