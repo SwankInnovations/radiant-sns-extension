@@ -1,17 +1,4 @@
-module FileSystem::Model::JavascriptExtensions
-  
-  def self.included(base)
-    base.class_eval do
-      puts "loading javascript extensions"
-      extend ClassMethods
-    end
-  end
-  
-  module ClassMethods
-    def klass_name
-      "Javascript"
-    end
-  end
+module FileSystem::Model::TextAssetExtensions
   
   def filename
     @filename ||= returning String.new do |output|
@@ -33,10 +20,4 @@ module FileSystem::Model::JavascriptExtensions
                           [basename, minify, extension].compact.join("."))
     end
   end
-  
-  private
-    def default_content_type
-      "js"
-    end
-  
 end
