@@ -37,20 +37,61 @@ namespace :radiant do
       task :config => :environment do
         new_settings = {}
 
-        if ARGV.length == 2 && ARGV[1] = 'restore_defaults'
+        # Remove all ARGVs from the front that we don't care about.
+        # This lets us handle differnt input like:
+        #    rake radiant:extensions:sns:config [param list]
+        #    rake production radiant:extensions:sns:config [param list]
+        until ARGV.shift =~ /radiant:extensions:sns:config/; end
+
+        if ARGV.first == 'restore_defaults' && ARGV.length == 1
+          # restore defaults
           print %{\nRestoring Sns::Config Defaults -> }
           Sns::Config.restore_defaults
           puts "Success"
 
-
+        elsif ARGV.length == 0 || ((ARGV.first == '--help' || ARGV.first == '-help') && ARGV.length == 1 )
+          #show help text
+          puts "Shows and/or changes SnS configuration settings."
+          puts
+          puts "Usage: radiant:extensions:sns:config [option] | [setting1] [setting2] ..."
+          puts "  Options (instead of using settings"
+          puts "    --help, -help      Shows this info"
+          puts 
+          puts "  Settings are of the form 'setting=value' like:"
+          puts "      radiant:extensions:sns:config js_dir=my_javascripts"
+          puts
+          puts "  Allowable settings:"
+          puts "    css_dir            Sets the server's stylesheet_directory"
+          puts "    js_dir             Sets the server's javascript_directory"
+          puts "    css_mime           Sets the server's stylesheet_mime_type"
+          puts "    js_mime            Sets the server's javascript_mime_type"
+          puts "    reset_all          Restores all settings to the factory original"
+          puts
+          puts "The current value for TEXT_ASSET_CACHE_DIR is displayed here for your"
+          puts "convenience but it cannot be changed. If you must change it, you can"
+          puts "via the sns_extension.rb file. Doing so requires restarting Radiant."
+        
         else
-          # iterate through each argument (except ARGV[0]) and verify well-formed
-          ARGV[1..ARGV.length-1].each do |argument|
+          # iterate through each argument and verify each is well-formed
+          ARGV.each do |argument|
             arg_elements = argument.split("=")
             raise(%{Invalid parameter: "#{argument}"}) unless arg_elements.length == 2
+            case arg_elements.first
+              when 'css_dir', 'stylesheet_directory'
+                arg_elements[0] = 'stylesheet_directory'
+              when 'js_dir', 'javascript_directory'
+                arg_elements[0] = 'javascript_directory'
+              when 'css_mime', 'stylesheet_mime_type'
+                arg_elements[0] = 'stylesheet_mime_type'
+              when 'js_mime', 'javascript_mime_type'
+                arg_elements[0] = 'javascript_mime_type'
+              else
+                raise %{Invalid setting name: "#{arg_elements[0]}"}
+            end
             new_settings[arg_elements[0]] = arg_elements[1]
           end
 
+          # now that we know the input was ok, let's set 'em
           new_settings.each do |k,v|
             print %{--setting Sns::Config[#{k}] = "#{v}" -> }
             Sns::Config[k] = v
@@ -58,6 +99,7 @@ namespace :radiant do
           end
         end
 
+        # follow up by showing the current state of settings
         puts "\n  Current Styles 'n Scripts Configuration:\n\n"
         # convert the hash into an array to sort by key name (pair[0])
         Sns::Config.to_hash.to_a.sort_by { |pair| pair[0] }.each do |pair|
