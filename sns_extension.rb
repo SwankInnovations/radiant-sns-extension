@@ -41,8 +41,8 @@ class SnsExtension < Radiant::Extension
     admin.tabs.add "JS", "/admin/js", :after => "CSS", :visibility => [:admin, :developer]
 
     # Include my mixins (extending PageTags and SiteController)
-    Page.send :include, PageTagMixins
-    SiteController.send :include, SiteControllerMixins
+    Page.send :include, Sns::PageTags
+    SiteController.send :include, Sns::SiteControllerExt
 
     Radiant::AdminUI.class_eval do
       attr_accessor :text_asset
