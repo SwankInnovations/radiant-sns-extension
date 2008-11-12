@@ -2,7 +2,6 @@ module FileSystem::Model::StylesheetExtensions
   
   def self.included(base)
     base.class_eval do
-      puts "loading Stylesheet extensions"
       extend ClassMethods
     end
   end
