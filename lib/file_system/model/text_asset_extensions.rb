@@ -7,9 +7,6 @@ module FileSystem::Model::TextAssetExtensions
   end
   
   module ClassMethods
-    def klass_name
-      "TextAsset"
-    end
     
     def load_files
       files = Dir[path + "/**"]
@@ -71,9 +68,6 @@ module FileSystem::Model::TextAssetExtensions
   end
   
   private
-    def default_content_type
-      super
-    end
     
     def extract_attrs_from_filename(basename)
       name_parts = basename.split(".")
