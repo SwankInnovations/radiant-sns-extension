@@ -50,7 +50,7 @@ class SnsExtension < Radiant::Extension
     admin.text_asset = load_default_text_asset_regions
 
     
-    # Add Javascript and Stylesheet to UserActionObserver (used for updated_at and updated_by)
+    # Add Javascript and Stylesheet to UserActionObserver (used for created_by and updated_by)
     observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript]
     UserActionObserver.send :observe, observables
     UserActionObserver.instance.send :add_observer!, Stylesheet
