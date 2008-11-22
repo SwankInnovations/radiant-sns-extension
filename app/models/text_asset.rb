@@ -14,8 +14,6 @@ class TextAsset < ActiveRecord::Base
   # the following regexp uses \A and \Z rather than ^ and $ to enforce no "\n" characters
   validates_format_of :name, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
 
-  before_save :parse_dependency_names
-  
   object_id_attr :filter, TextAssetFilter
 
   include Radiant::Taggable
@@ -23,41 +21,57 @@ class TextAsset < ActiveRecord::Base
 
 
   def after_initialize
-    self.dependency = TextAssetDependency.new(:names => []) if new_record?
-    create_tags #adds radius tags to the inherited class now that it has initialized
+    self.dependency = TextAssetDependency.new(:names => []) if self.new_record?
+    #add radius tags to the inherited class now that it has initialized
+    create_tags
   end
 
 
+  # Ensures that the associated 'dependency' model is saved and alerts potential
+  # dependants that this instance has been updated
+  def after_save
+    self.dependency.names = parse_dependency_names
+    self.dependency.effectively_updated_at = self.updated_at
+    self.dependency.save
+    update_dependants(self.updated_at)
+  end
+
+
+  # Alert all potential dependants that this instance has been updated
+  def after_destroy
+    update_dependants(Time.now)
+  end
+
+
+  # URL relative to the web root (accounting for Sns::Config settings)
   def url
     "/" + Sns::Config["#{self.class.to_s.underscore}_directory"] +
         "/" + self.name
   end
 
 
+  # Convenience method
   def effectively_updated_at
-    if dependency.effectively_updated_at.nil?
-      dependency_names = self.dependency.names || parse_dependency_names
-      self.dependency.effectively_updated_at = TextAsset.find_by_name(names, :order => "updated_at DESC").updated_at
-      self.dependency.save
-    end
     self.dependency.effectively_updated_at
   end
 
-  
-  def parse_dependency_names
-    parse(self.content, false)
-    self.dependency.names = @parsed_dependency_names.uniq
+
+  # This method is called from outside to notify this instance that another
+  # text asset has been updated.
+  def process_newly_updated_dependency(name, time)
+    if self.dependency.names.include?(name)
+      self.dependency.update_attribute('effectively_updated_at', time)
+    end
   end
 
 
+  # Parses, and filters the current content for output
   def render
-    text = self.content
-    text = parse(text)
-    text = self.filter.filter(text)
-    text
+    self.filter.filter(parse(self.content))
   end
 
 
+  # Parses the content using a TextAssetContext
   def parse(text, show_errors = true)
     @parsed_dependency_names = []
     unless @parser and @context
@@ -69,6 +83,7 @@ class TextAsset < ActiveRecord::Base
   end
 
 
+  # Takes an uploaded file (in memory) and creates a new text asset from it
   def self.create_from_file(file)
     @text_asset = self.new
     if file.blank?
@@ -92,6 +107,25 @@ class TextAsset < ActiveRecord::Base
 
   private
 
+    # Parses the content and builds an array of all refrenced text_assets (from
+    # within tags).
+    def parse_dependency_names
+      parse(self.content, false)
+      @parsed_dependency_names.uniq
+    end
+
+
+    # Finds all text_assets of the same class and alerts each that this instance
+    # has just been updated
+    def update_dependants(time)
+      self.class.find(:all).each do |other_text_asset|
+        unless other_text_asset.name == self.name
+          other_text_asset.process_newly_updated_dependency(self.name, time)
+        end
+      end
+    end
+
+
     # Adds a tag named after the inheriting class name (i.e. <r:javascript> or
     # <r:stylesheet>).  This method is kind of funky since we wanted to define
     # the tag in only one place yet we don't have the inheriting class' name
@@ -100,11 +134,11 @@ class TextAsset < ActiveRecord::Base
       self.class.class_eval do
         tag(self.name.underscore) do |tag|
           if name = tag.attr['name']
-            @parsed_dependency_names << tag.attr['name'].strip
-            if text_asset = self.class.find_by_name(tag.attr['name'].strip)
+            @parsed_dependency_names << name.strip
+            if text_asset = self.class.find_by_name(name.strip)
               text_asset.render
             else
-              raise TagError.new("#{self.class.to_s.underscore} not found")
+              raise TagError.new("#{self.class.to_s.underscore} with name '#{name}' not found")
             end
           else
             raise TagError.new("`#{self.class.to_s.underscore}' tag must contain a `name' attribute.") unless tag.attr.has_key?('name')

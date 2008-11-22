@@ -35,3 +35,8 @@ Spec::Runner.configure do |config|
   # If you declare global fixtures, be aware that they will be declared
   # for all of your examples, even those that don't use them.
 end
+
+def save_asset_at(text_asset, year)
+  Time.stub!(:now).and_return(Time.utc(year))
+  text_asset.save!
+end

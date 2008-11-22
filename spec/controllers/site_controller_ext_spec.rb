@@ -201,7 +201,7 @@ describe SiteController, "(Extended)" do
         it "should reflect the #{current_asset[:name]}'s updated_at date/time if the file has no dependencies" do
           get :show_page,
               :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == Time.gm(1990).httpdate
+          response.headers['Last-Modified'].should == Time.utc(1990).httpdate
         end
 
 
@@ -212,7 +212,7 @@ describe SiteController, "(Extended)" do
 
           get :show_page,
               :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == Time.gm(1992).httpdate
+          response.headers['Last-Modified'].should == Time.utc(1992).httpdate
         end
 
 
@@ -223,7 +223,7 @@ describe SiteController, "(Extended)" do
 
           get :show_page,
               :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == Time.gm(1994).httpdate
+          response.headers['Last-Modified'].should == Time.utc(1994).httpdate
         end
 
       end
@@ -233,11 +233,3 @@ describe SiteController, "(Extended)" do
   end
 
 end
-
-
-private
-
-  def save_asset_at(text_asset, year)
-    Time.stub!(:now).and_return(Time.gm(year))
-    text_asset.save!
-  end

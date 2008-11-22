@@ -80,7 +80,7 @@ describe TextAssetResponseCache do
     it "should cache response for url: #{url.inspect}" do
       @cache.clear
       response = response('content', 'Last-Modified' => 'Tue, 27 Feb 2007 06:13:43 GMT')
-      response.cache_timeout = Time.gm(2007, 2, 8, 17, 37, 9)
+      response.cache_timeout = Time.utc(2007, 2, 8, 17, 37, 9)
       @cache.cache_response(url, response)
       name = "#{@dir}/test/me.yml"
       File.exists?(name).should == true

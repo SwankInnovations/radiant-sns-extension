@@ -1,4 +1,4 @@
-# TEXT_ASSET_CACHE_DIR stores directory where text assets will be cached 
+# TEXT_ASSET_CACHE_DIR stores directory where text assets will be cached
 # (relative to RAILS_ROOT). The default value is: "text_asset_cache"
 #
 # NOTE: If you change this, don't forget to remove any previous cache folder
@@ -49,16 +49,12 @@ class SnsExtension < Radiant::Extension
     end
     admin.text_asset = load_default_text_asset_regions
 
-    
+
     # Add Javascript and Stylesheet to UserActionObserver (used for created_by and updated_by)
     observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript]
     UserActionObserver.send :observe, observables
     UserActionObserver.instance.send :add_observer!, Stylesheet
     UserActionObserver.instance.send :add_observer!, Javascript
-
-    # Activate TextAssetObserver (can't be set via config.active_record.observer)
-    TextAssetObserver.instance.send :add_observer!, Stylesheet
-    TextAssetObserver.instance.send :add_observer!, Javascript
   end
 
 
