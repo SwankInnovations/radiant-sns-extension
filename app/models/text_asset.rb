@@ -6,7 +6,7 @@ class TextAsset < ActiveRecord::Base
   # Associations
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
-  has_one :dependencies, :class_name => 'TextAssetDependencies', :dependent => :destroy
+  has_one :dependency, :class_name => 'TextAssetDependency', :dependent => :destroy
 
   validates_presence_of :name, :message => 'required'
   validates_length_of :name, :maximum => 100, :message => '%d-character limit'
@@ -14,6 +14,8 @@ class TextAsset < ActiveRecord::Base
   # the following regexp uses \A and \Z rather than ^ and $ to enforce no "\n" characters
   validates_format_of :name, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
 
+  before_save :parse_dependency_names
+  
   object_id_attr :filter, TextAssetFilter
 
   include Radiant::Taggable
@@ -21,7 +23,7 @@ class TextAsset < ActiveRecord::Base
 
 
   def after_initialize
-    self.dependencies = TextAssetDependencies.new(:list => []) if new_record?
+    self.dependency = TextAssetDependency.new(:names => []) if new_record?
     create_tags #adds radius tags to the inherited class now that it has initialized
   end
 
@@ -33,7 +35,18 @@ class TextAsset < ActiveRecord::Base
 
 
   def effectively_updated_at
-    dependencies.effectively_updated_at
+    if dependency.effectively_updated_at.nil?
+      dependency_names = self.dependency.names || parse_dependency_names
+      self.dependency.effectively_updated_at = TextAsset.find_by_name(names, :order => "updated_at DESC").updated_at
+      self.dependency.save
+    end
+    self.dependency.effectively_updated_at
+  end
+
+  
+  def parse_dependency_names
+    parse(self.content, false)
+    self.dependency.names = @parsed_dependency_names.uniq
   end
 
 
@@ -46,6 +59,7 @@ class TextAsset < ActiveRecord::Base
 
 
   def parse(text, show_errors = true)
+    @parsed_dependency_names = []
     unless @parser and @context
       @context = TextAssetContext.new(self)
       @parser = Radius::Parser.new(@context, :tag_prefix => 'r')
@@ -86,7 +100,7 @@ class TextAsset < ActiveRecord::Base
       self.class.class_eval do
         tag(self.name.underscore) do |tag|
           if name = tag.attr['name']
-            self.dependencies.list << tag.attr['name'].strip
+            @parsed_dependency_names << tag.attr['name'].strip
             if text_asset = self.class.find_by_name(tag.attr['name'].strip)
               text_asset.render
             else

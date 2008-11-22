@@ -1,6 +1,4 @@
-class TextAssetDependencies < ActiveRecord::Base
-
+class TextAssetDependency < ActiveRecord::Base
   belongs_to :text_asset
-  serialize :list, Array
-
+  serialize :names, Array
 end

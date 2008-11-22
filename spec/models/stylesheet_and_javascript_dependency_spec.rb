@@ -28,28 +28,28 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
     it 'should log one dependency if only one tag' do
       @text_asset.save!
-      @text_asset.dependencies.list.should == ["main"]
+      @text_asset.dependency.names.should == ["main"]
     end
 
 
     it 'should log a dependency even if the reference file does not exist' do
       @text_asset.content = %{<r:#{current_tag[:name]} name="a_nonexistent_file" />}
       @text_asset.save!
-      @text_asset.dependencies.list.should == ["a_nonexistent_file"]
+      @text_asset.dependency.names.should == ["a_nonexistent_file"]
     end
 
 
     it 'should log only one dependency if mulitiple tags all reference the the same file' do
       @text_asset.content << %{<r:#{current_tag[:name]} name="main" />}
       @text_asset.save!
-      @text_asset.dependencies.list.should == ["main"]
+      @text_asset.dependency.names.should == ["main"]
     end
 
 
     it 'should log multiple dependencies if multiple files are referenced' do
       @text_asset.content << %{<r:#{current_tag[:name]} name="another_file" />}
       @text_asset.save!
-      @text_asset.dependencies.list.sort.should == ["another_file", "main"]
+      @text_asset.dependency.names.sort.should == ["another_file", "main"]
     end
 
 
@@ -57,7 +57,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @text_asset.content << %{<r:#{current_tag[:name]} name="another_file" />}
       @text_asset.content << %{<r:#{current_tag[:name]} name="main" />}
       @text_asset.save!
-      @text_asset.dependencies.list.sort.should == ["another_file", "main"]
+      @text_asset.dependency.names.sort.should == ["another_file", "main"]
     end
 
   end
@@ -65,83 +65,83 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 
 
-  describe "A saved #{current_tag[:name]}'s effectively_updated_at method" do
+  describe "A saved #{current_tag[:name]}'s effectively_updated_at value" do
     before :each do
       @dependant = current_tag[:class].new(:name => 'dependant')
-      save_asset_at(@dependant, 1990)
+      save_asset_at(@dependant, 1980)
     end
 
 
     it "should reflect its own creation date/time (created_at) if the file hasn't been updated and has no dependencies" do
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1990)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1980)
     end
 
 
     it "should reflect its own change date/time (updated_at) if the file has no dependencies" do
-      save_asset_at(@dependant, 1994)
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1994)
+      save_asset_at(@dependant, 1981)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1981)
     end
 
 
     it "should reflect its own change date/time if it references dependencies which do not exist" do
       @dependant.content = %{<r:#{current_tag[:name]}name="a_bogus_text_asset" />}
-      save_asset_at(@dependant, 1994)
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1994)
+      save_asset_at(@dependant, 1982)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1982)
     end
 
 
     it "should reflect a dependency's creation date/time when that dependency (which previously didn't exist) is created" do
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
-      save_asset_at(@dependant, 1994)
+      save_asset_at(@dependant, 1983)
 
       @dependency = current_tag[:class].new(:name => 'dependency')
-      save_asset_at(@dependency, 1995)
+      save_asset_at(@dependency, 1984)
 
       @dependant = current_tag[:class].find_by_name('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1995)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1984)
     end
 
 
     it "should reflect its own change date/time when it is updated" do
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
-      save_asset_at(@dependant, 1991)
+      save_asset_at(@dependant, 1985)
 
       @dependency = current_tag[:class].new(:name => 'dependency')
-      save_asset_at(@dependency, 1995)
+      save_asset_at(@dependency, 1986)
 
-      save_asset_at(@dependant, 1999)
+      save_asset_at(@dependant, 1987)
 
       @dependant = current_tag[:class].find_by_name('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1999)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1987)
     end
 
 
     it "should reflect a dependency's change date/time once that dependency is updated" do
       @dependency = current_tag[:class].new(:name => 'dependency')
-      save_asset_at(@dependency, 1990)
+      save_asset_at(@dependency, 1988)
 
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
-      save_asset_at(@dependant, 1992)
+      save_asset_at(@dependant, 1989)
 
-      save_asset_at(@dependency, 1993)
+      save_asset_at(@dependency, 1990)
 
       @dependant = current_tag[:class].find_by_name('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1993)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1990)
     end
 
 
     it "should reflect a dependency's deletion date/time when that dependency file is removed" do
       @dependency = current_tag[:class].new(:name => 'dependency')
-      save_asset_at(@dependency, 1996)
+      save_asset_at(@dependency, 1991)
 
       @dependant.content = %{<r:#{current_tag[:name]} name="dependency" />}
-      save_asset_at(@dependant, 1997)
+      save_asset_at(@dependant, 1992)
 
-      Time.stub!(:now).and_return(Time.gm(1998))
+      Time.stub!(:now).and_return(Time.gm(1993))
       @dependency.destroy
 
       @dependant = current_tag[:class].find_by_name('dependant')
-      @dependant.dependencies.effectively_updated_at.should == Time.gm(1998)
+      @dependant.dependency.effectively_updated_at.should == Time.gm(1993)
     end
 
   end
