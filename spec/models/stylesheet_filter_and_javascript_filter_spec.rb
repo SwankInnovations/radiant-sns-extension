@@ -45,10 +45,10 @@ end
       current_filter[:class].descendants.should include(
           current_filter[:reverse])
     end
-    
-    
+
+
     it "should use a subclass's name as the default filter_name (SuperDuperFilter -> 'Super Duper'" do
-      current_filter[:simple].filter_name.should == current_filter[:simple]. 
+      current_filter[:simple].filter_name.should == current_filter[:simple].
           to_s.titleize.gsub(/\s*Filter$/, '')
     end
 
@@ -56,13 +56,13 @@ end
     it "should allow developers to override the default with their own filter_name" do
       current_filter[:reverse].filter_name.should == 'Custom Filter Name'
     end
-  
+
 
     it "should pass back the input text unfiltered if a filter is not explicitly defined" do
       current_filter[:simple].filter('my test text').should == 'my test text'
     end
 
-  
+
     it "should pass return filtered text via a #filter method" do
       current_filter[:reverse].filter('my test text').should == 'txet tset ym'
     end
