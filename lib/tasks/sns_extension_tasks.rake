@@ -1,14 +1,15 @@
 namespace :radiant do
   namespace :extensions do
     namespace :sns do
-      
+
       desc "Runs migrations for SnS, and copies public assets.
-      Equivalent to running `rake radiant:extensions:sns:migrate` 
+      Equivalent to running `rake radiant:extensions:sns:migrate`
       then `rake radiant:extensions:sns:update` consecutively."
       task :install => [:environment, :migrate, :update] do
         puts "The SnS extension has been successfully installed."
       end
-      
+
+
       desc "Runs the migration of the SnS extension"
       task :migrate => :environment do
         require 'radiant/extension_migrator'
@@ -29,6 +30,31 @@ namespace :radiant do
           puts "Copying #{path}..."
           mkdir_p RAILS_ROOT + directory
           cp file, RAILS_ROOT + path
+        end
+      end
+
+
+      desc "(Re)calculates values for all TextAssetDependencies"
+      task :set_dependencies => :environment do
+        puts "", "== Setting/Correcting TextAssetDependency Values =============================="
+        TextAsset.find(:all, :order => 'id ASC').each do |text_asset|
+          puts "", "-- setting values for #{text_asset.class.to_s.downcase}: #{text_asset.name}"
+          # parse/set dependency names
+          text_asset.dependency.names = text_asset.send(:parse_dependency_names)
+          puts '    last updated at: ' + text_asset.updated_at.to_s
+          # initially set effective update time to asset's updated_at time
+          effectively_updated_at = text_asset.updated_at
+          if text_asset.dependency.names.empty?
+            puts '    dependencies: none'
+          else
+            puts '    dependencies: ' + text_asset.dependency.names.join("\n" + " " * 18)
+            dependencies_updated_at = TextAsset.find_by_name(text_asset.dependency.names, :order => 'updated_at DESC').updated_at
+            puts '    dependencies updated: ' + dependencies_updated_at.to_s
+            effectively_updated_at = dependencies_updated_at if effectively_updated_at < dependencies_updated_at
+          end
+          text_asset.dependency.effectively_updated_at = effectively_updated_at
+          puts '    effectively updated: ' + effectively_updated_at.to_s
+          text_asset.dependency.save!
         end
       end
 
@@ -56,7 +82,7 @@ namespace :radiant do
           puts "Usage: radiant:extensions:sns:config [option] | [setting1] [setting2] ..."
           puts "  Options (instead of using settings"
           puts "    --help, -help      Shows this info"
-          puts 
+          puts
           puts "  Settings are of the form 'setting=value' like:"
           puts "      radiant:extensions:sns:config js_dir=my_javascripts"
           puts
@@ -70,7 +96,7 @@ namespace :radiant do
           puts "The current value for TEXT_ASSET_CACHE_DIR is displayed here for your"
           puts "convenience but it cannot be changed. If you must change it, you can"
           puts "via the sns_extension.rb file. Doing so requires restarting Radiant."
-        
+
         else
           # iterate through each argument and verify each is well-formed
           ARGV.each do |argument|
