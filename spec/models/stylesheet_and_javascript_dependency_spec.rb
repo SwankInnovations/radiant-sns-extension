@@ -146,4 +146,100 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
   end
 
+
+
+# These specs deal with TextAsset objects automatically recreating the associated
+# dependency objects (and their values) upon initialization.  I'm not sure this
+# is really a requirement but I'll keep the specs here (commented out) since I
+# did the work of creating them in case I change my mind later.
+#  describe "an existing #{current_tag[:name]}" do
+#    require 'scenarios'
+#
+#    before :each do
+#      create_record :text_asset, :dependant,
+#          :name => 'data-missing',
+#          :class_name => current_tag[:class].to_s,
+#          :content => "<r:#{current_tag[:name]} name='dependency1'/>" +
+#                      "<r:#{current_tag[:name]} name='dependency2'/>",
+#          :updated_at => Time.utc(1990)
+#      create_record :text_asset, :dependency1,
+#          :name => 'dependency1',
+#          :class_name => current_tag[:class].to_s,
+#          :updated_at => Time.utc(1980)
+#      create_record :text_asset, :dependency2,
+#          :name => 'dependency2',
+#          :class_name => current_tag[:class].to_s,
+#          :updated_at => Time.utc(2000)
+#    end
+#
+#
+#
+#
+#    describe "with no associated TextAssetDependency object" do
+#
+#      it 'should create a new one during instantiation' do
+#        text_assets(:dependant).dependency.id.should ==
+#            TextAssetDependency.find_by_text_asset_id(text_assets(:dependant).id)
+#      end
+#
+#    end
+#
+#
+#
+#
+#    describe 'where the dependency.names is not set (nil)' do
+#
+#      before :each do
+#        # gets the asset (but this will set dependency.names
+#        text_asset = text_assets(:dependant)
+#        @text_asset_id = @text_asset.id
+#        # delete the value for dependency.names and save to db
+#        text_asset.dependency.update_attribute('names', nil)
+#      end
+#
+#
+#      it 'should reparse dependency names during initialization' do
+#        text_assets(:dependant).dependency.names.should ==
+#            ['dependency1', 'dependency2']
+#      end
+#
+#
+#      it 'should store the reparsed dependency names in the db' do
+#        text_assets(:dependant)
+#        TextAssetDependency.find_by_text_asset_id(@text_asset_id).names.should ==
+#              ['dependency1', 'dependency2']
+#      end
+#
+#    end
+#
+#
+#
+#
+#    describe 'where the dependency.effectively_updated_at is not set (nil)' do
+#
+#      before :each do
+#        # gets the asset (but this will set dependency.names
+#        text_asset = text_assets(:dependant)
+#        @text_asset_id = @text_asset.id
+#        # delete the value for dependency.names and save to db
+#        text_asset.dependency.update_attribute('names', nil)
+#      end
+#
+#
+#      it 'should reparse dependency names during initialization' do
+#        text_assets(:dependant).dependency.effectively_updated_at.should ==
+#            Time.utc(2000)
+#      end
+#
+#
+#      it 'should store the reparsed dependency names in the db' do
+#        text_assets(:dependant)
+#        TextAssetDependency.find_by_text_asset_id(@text_asset_id).effectively_updated_at.should ==
+#            Time.utc(2000)
+#      end
+#
+#    end
+#
+#  end
+
 end
