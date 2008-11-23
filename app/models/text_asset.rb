@@ -22,7 +22,7 @@ class TextAsset < ActiveRecord::Base
 
   def after_initialize
     self.dependency = TextAssetDependency.new(:names => []) if self.new_record?
-    #add radius tags to the inherited class now that it has initialized
+    # add radius tags to the inherited class now that it has initialized
     create_tags
   end
 
