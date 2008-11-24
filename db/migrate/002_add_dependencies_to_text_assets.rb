@@ -10,7 +10,7 @@ class AddDependenciesToTextAssets < ActiveRecord::Migration
       puts "         which now won't have associated text_asset_dependency records."
       puts "\n          To solve this, you will need to run the following rake task"
       puts "                  once you've fully migrated your database:"
-      puts "       rake #{RAILS_ENV} radiant:extensions:sns:update_dependencies"
+      puts "       rake #{RAILS_ENV} radiant:extensions:sns:rebuild_dependencies"
       puts "\n                          * * * * * *  * * * * * *\n\n"
       puts "Press 'enter' to acknowledge and proceed with the migration(s):"
       STDIN.gets

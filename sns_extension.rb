@@ -9,10 +9,10 @@ require 'ostruct'
 
 
 class SnsExtension < Radiant::Extension
-  version "0.7"
+  version "0.7.1"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
-  url ""
+  url "http://github.com/SwankInnovations/radiant-sns-extension"
 
 
   define_routes do |map|

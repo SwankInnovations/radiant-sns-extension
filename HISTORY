@@ -1,24 +1,30 @@
+v0.7.1  Renamed the rake task from update_dependencies to rebuild_dependencies.
+
+
 v0.7    Added a new rake task to (re)create the text_asset_dependencies table as
         Some users were having troubles due to bad imports (see below).  Since
         this table is purely calculated values, this new task can be run at any
-        time:  rake [ENV] radaint:extensions:sns:update_dependencies
+        time:  
+        
+            rake [ENV] radaint:extensions:sns:update_dependencies
+        
+        NOTE: this rake task renamed in v0.7.1 (now 'rebuild_dependencies').
 
-        Otherwise, this version is bugfixes or resolved issues:
-        
-        Export/export extensions were failing to export text_asset_dependencies
-        as the table and model names were both plural.  I've since submitted
-        patches to those extensions but renamed the model to TextAssetDependency
-        anyway (a bit less accurate but good enough).
-        
-        Rake task radiant:extensions:sns:config was broken.  Fixed and improved
-        it to include a help screen (--help or if no params).
-        
-        Changed TextAsset.filename to TextAsset.name (mostly for the file_system
-        extension but also makes the models more consistent with Radiant models
-        like Snippet and Layout)
-        
-        Generally cleaned up and refactored the code.
-        
+        The code was has been cleaned up and refactored in places.
+
+        Bugfixes and resolved issues:
+          * Importing/exporting extensions were failing to export the
+            text_asset_dependencies as the matching model names was also plural.
+            I've since submitted patches to those extensions but renamed the
+            model to TextAssetDependency (a bit less accurate but good enough).
+    
+          * Rake task radiant:extensions:sns:config was broken.  Fixed and
+            improved it to include a help screen (--help or if no params).
+    
+          * Changed TextAsset.filename to TextAsset.name (Donde mostly for the
+            file_system extension but also makes the models more consistent with
+            other Radiant models like Snippet and Layout).
+
 
 v0.6.2  Minor, minor fix: Corrected extension versioning and this history file.
 
@@ -29,43 +35,43 @@ v0.6.1  Bug fix:  Text Assets were rendering with no Status header.  Apparently
 v0.6    Change extension code to use "sns" instead of "styles_n_scripts" -- this
         will impact users as they need to move the extension from:
           /vendor/extensions/styles_n_scripts
-        
+
         to:
           /vendor/extensions/sns
-          
+
         Other than that, it's just a drop in replacement.
 
 
 v0.5    Lots of improvements here.  Some new features some just refactoring.
-        
+
         Added Shards to the edit view so now this extension can be extended
         (watch for SnS extension extensions to come soon).
-        
+
         Added support for filters.  The only real one planned is Sass for the
         CSS files but, the way I did it, it's pretty extensible (based on how
         Radiant handles page content filters).  Did I mention that there were
         some SnS extension extensions coming soon...
-        
+
         Changed the way stylesheet and javascript urls were routed and evaluated
         (now its a before_filter hooked into SiteController's show_page method).
         This has the added bonus of allowing the stylesheet and javascript
         directories to be changed during runtime (see next point).
-        
+
         Configurations are now handled differently.  Rather than setting them
         once at load-time, they are changed dynamically via Rake tasks.  The
         only exception is the caching directory -- you really don't want to do
         that one dynamcially -- so it's been pulled out of the config and made a
         constant.
-        
+
         Caching is more better.  No more caching the whole url path -- just the
         file, thank you.  This makes it possible to change the directory name
         on the fly.
-            
+
         Bug fixes:
           * Added a 'url' definition (just "") to the extension to fix an issue
             with a change in Radiant 0.6.7 behavior (I really shoulda done that
             all along).
-            
+
           * Corrected an issue where this extension is included as part of a new
             Radiant install.  The RAKE db:bootstrap task would initialize the
             extension which would then try to write the default settings to a
@@ -89,70 +95,70 @@ v0.3.1  Moved Templates to Haml -- now requires Radiant 0.6.7 (or 0.6.6 and
         can create an external link like:
 
             <r:stylesheet name="my_file.css" as="link" />
-            
+
             or
-            
+
             <r:javascript name="my_file.js" as="link" />
-            
+
         Also made the as="inline" option XHTML compliant by replacing the
         commenting (<!-- -->) with a proper CDATA wrapper.
- 
+
         See the documentation in 'available tags' on the page-edit page for more
         (now more readable).
 
 
 v0.3    Big new features plus code refactoring and a bug fix.  First, the new
         fetures include:
-        
+
           * Added <r:stylesheet> and <r:javascript> tags for use in pages.  This
-            lets you inject your stylesheet or javascript code into your Page 
+            lets you inject your stylesheet or javascript code into your Page
             much like using a snippet or just render the URL to the referenced
             CSS or JS file (see the readme for more on this).
-            
+
           * Added <r:stylesheet> and <r:javascript> tags for use in other
             Stylesheets or Javascripts.  This lets you maintain mulitple files
             yet just serve one master-stylesheet or master-javascript to your
             end users (cut down on server requests)
-            
+
             Along with this, I did a fancy trick with tracking dependencies so
             that the cache knows when to update (add, edit, or remove a file
             referenced by a <r:stylesheet> or <r:javascript> tag and the
             dependant file's effectively_updated_at time changes to reflect it).
-            
+
           * Added file upload button to the index pages.  Now instead of just
             creating new stylesheets or javascripts, you can upload a file into
             Radiant
-        
+
         The bugfix includes the completion of the one addressed in v0.2.1 by
         adding the form helper to the remove.html.erb template.
-            
-            
+
+
 v0.2.2  Bug fixes:
           * I added the UserActionObserver behavior and accompanying specs
-            to the Stylesheet and Javascript models 
+            to the Stylesheet and Javascript models
 
 
 v0.2.1  Bug fixes:
           * I corrected the ActionController::InvalidAuthenticityToken that
             comes from my not using the form helpers in my templates.  I also
             weakly spec-ed it.
-        
+
             NOTE: This was only a partial fix.  I corrected the edit.html.erb
-            template but not the remove.html.erb one.  See v0.3 for the 
+            template but not the remove.html.erb one.  See v0.3 for the
             completely fixed version.
 
 
 v0.2    Initial public release.  Complete rebuild of the extension to work with
         Rails 2.0 and Radiant 0.6.6.  Added *lots* of specs and focused on
         making this thing robust.
-        
+
         Basic functionality included:
-        
+
           * Stores stylesheet and javascript files
-          
+
           * Caches them with their own, improved response cache (improved in
             that it handles this file type better)
-            
+
           * Configuration management utility to allow extension users to adjust
             default settings
 

@@ -35,7 +35,7 @@ namespace :radiant do
 
 
       desc "(Re)calculates values for all TextAssetDependencies"
-      task :update_dependencies => :environment do
+      task :rebuild_dependencies => :environment do
         puts "", "== Setting/Correcting TextAssetDependency Values =============================="
         TextAsset.find(:all, :order => 'id ASC').each do |text_asset|
           puts "", "-- setting values for #{text_asset.class.to_s.downcase}: #{text_asset.name}"
