@@ -35,10 +35,11 @@ namespace :radiant do
 
 
       desc "(Re)calculates values for all TextAssetDependencies"
-      task :set_dependencies => :environment do
+      task :update_dependencies => :environment do
         puts "", "== Setting/Correcting TextAssetDependency Values =============================="
         TextAsset.find(:all, :order => 'id ASC').each do |text_asset|
           puts "", "-- setting values for #{text_asset.class.to_s.downcase}: #{text_asset.name}"
+          text_asset.dependency = TextAssetDependency.new unless text_asset.dependency
           # parse/set dependency names
           text_asset.dependency.names = text_asset.send(:parse_dependency_names)
           puts '    last updated at: ' + text_asset.updated_at.to_s
