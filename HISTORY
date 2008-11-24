@@ -1,3 +1,19 @@
+v0.7    Mostly bugfixes or resolved issues with other extension.
+        Export/export extensions were failing to export text_asset_dependencies
+        as the table and model names were both plural.  I've since submitted
+        patches to those extensions but renamed the model to TextAssetDependency
+        anyway (a bit less accurate but good enough).
+        
+        Rake task radiant:extensions:sns:config was broken.  Fixed and improved
+        it to include a help screen (--help or if no params).
+        
+        Changed TextAsset.filename to TextAsset.name (mostly for the file_system
+        extension but also makes the models more consistent with Radiant models
+        like Snippet and Layout)
+        
+        Generally cleaned up and refactored the code.
+        
+
 v0.6.2  Minor, minor fix: Corrected extension versioning and this history file.
 
 v0.6.1  Bug fix:  Text Assets were rendering with no Status header.  Apparently
