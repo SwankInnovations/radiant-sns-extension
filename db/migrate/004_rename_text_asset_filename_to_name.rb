@@ -1,4 +1,4 @@
-class RenameTextAssetFilenameToName < ActiveRecord::Migration
+class RenameTextAssetFilenameAndDependencyListColumns < ActiveRecord::Migration
   def self.up
     rename_column :text_assets, :filename, :name
     rename_column :text_asset_dependencies, :list, :names
