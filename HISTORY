@@ -1,4 +1,10 @@
-v0.7    Mostly bugfixes or resolved issues with other extension.
+v0.7    Added a new rake task to (re)create the text_asset_dependencies table as
+        Some users were having troubles due to bad imports (see below).  Since
+        this table is purely calculated values, this new task can be run at any
+        time:  rake [ENV] radaint:extensions:sns:update_dependencies
+
+        Otherwise, this version is bugfixes or resolved issues:
+        
         Export/export extensions were failing to export text_asset_dependencies
         as the table and model names were both plural.  I've since submitted
         patches to those extensions but renamed the model to TextAssetDependency
