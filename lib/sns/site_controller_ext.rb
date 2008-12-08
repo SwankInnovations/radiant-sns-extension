@@ -3,11 +3,10 @@ module Sns
 
     def self.included(base)
       base.class_eval do
-        prepend_before_filter :ensure_no_login_required
+        skip_before_filter :authenticate
         before_filter :parse_url_for_text_assets, :only => :show_page
       end
     end
-
 
     def text_asset_cache
       @text_asset_cache ||= TextAssetResponseCache.instance
@@ -15,15 +14,6 @@ module Sns
 
 
     private
-
-      # There's some really weird behavior going on here.  For some reason -- only
-      # when running specs -- the LoginSystem seems to be reset and so, forgets
-      # that login is not required for SiteController.  This method was added to
-      # refresh its memory (I really wish I didn't have to do this step).
-      def ensure_no_login_required
-        SiteController.no_login_required unless no_login_required?
-      end
-
 
       def parse_url_for_text_assets
         url = params[:url]
@@ -40,7 +30,6 @@ module Sns
         end
       end
 
-
       def show_text_asset(name, asset_type)
         response.headers.delete('Cache-Control')
         cache_url = "#{asset_type}_cache/#{name}"
@@ -52,7 +41,6 @@ module Sns
           show_uncached_text_asset(name, asset_type, cache_url)
         end
       end
-
 
       def show_uncached_text_asset(name, asset_type, cache_url)
         @text_asset = asset_type.camelcase.constantize.find_by_name(name)
