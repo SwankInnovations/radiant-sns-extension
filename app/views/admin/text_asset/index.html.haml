@@ -39,7 +39,7 @@
         %tr.node.level-1
           -# this next class is dumb but Radiant hard coded for the Snippet class so we'll just piggyback on that...
           %td.snippet 
-            = image(model_name, :alt => "#{model_name}-icon", :title => text_asset.url)
+            = image(model_symbol, :alt => "#{model_name}-icon", :title => text_asset.url)
             %span= link_to(text_asset.name, send("edit_admin_#{model_symbol}_path", :id => text_asset), :title => text_asset.url)
           %td.remove
             = link_to image('remove', :alt => "Remove #{model_name}"), send("remove_admin_#{model_symbol}_path", :id => text_asset)
@@ -48,9 +48,9 @@
         %td.note{:colspan => 2}== No #{plural_model_name}
 
 %p
-  = link_to(image("new-#{model_name}", :alt => "New #{model_name}"), send("new_admin_#{model_symbol}_path"))
+  = link_to(image("new-#{model_symbol}", :alt => "New #{model_name}"), send("new_admin_#{model_symbol}_path"))
   &nbsp;&nbsp;
-  = link_to image("upload-#{model_name}", :alt => "Upload #{model_name}"), "#", :onclick => "toggle_upload_popup(); return false;"
+  = link_to image("upload-#{model_symbol}", :alt => "Upload #{model_name}"), "#", :onclick => "toggle_upload_popup(); return false;"
 
 - content_for 'popups' do
   .popup#upload-popup{:style => 'display:none;width:20em'}
