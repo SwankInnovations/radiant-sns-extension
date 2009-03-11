@@ -20,7 +20,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
   describe "For #{current_asset[:name].pluralize}, the", Admin::TextAssetController do
 
     integrate_views
-    scenario :users
+    dataset :users
 
 
     before :each do

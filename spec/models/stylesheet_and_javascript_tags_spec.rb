@@ -22,7 +22,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 ].each do |current_tag|
 
   describe "<r:#{current_tag[:name]}> tags in a Page context" do
-    scenario :pages, :javascripts, :stylesheets
+    dataset :pages, :javascripts, :stylesheets
 
     before :each do
       create_page "text_asset_tags"
@@ -185,7 +185,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 
   describe "<r:#{current_tag[:name]}> tags in a #{current_tag[:asset_class].to_s} context" do
-    scenario :pages, :javascripts, :stylesheets
+    dataset :pages, :javascripts, :stylesheets
 
     before :each do
       @text_asset = current_tag[:asset_class].new

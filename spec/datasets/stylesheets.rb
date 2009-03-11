@@ -1,4 +1,4 @@
-class StylesheetsScenario < Scenario::Base
+class Stylesheets < Dataset::Base
 
   def load
     create_stylesheet "main", :content => "Main stylesheet content"

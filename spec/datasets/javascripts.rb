@@ -1,4 +1,4 @@
-class JavascriptsScenario < Scenario::Base
+class Javascripts < Dataset::Base
 
   def load
     create_javascript "main", :content => 'Main javascript content'

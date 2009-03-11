@@ -11,7 +11,7 @@ describe SiteController, "(Extended)" do
   # pages urls may conflict with stylesheet_ or javascript_directory urls.
   # Secondly, at least one page must exist when SiteController goes to find an
   # uncached page or else it redirects the user to the login screen.
-  scenario :javascripts, :stylesheets, :pages
+  dataset :javascripts, :stylesheets, :pages
 
   before(:each) do
     # make sure the css_ and js_directories are the default ones
