@@ -25,7 +25,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
     before :each do
       login_as :developer
-      @cache = @controller.cache = FakeResponseCache.new
+      #@cache = @controller.cache = FakeResponseCache.new
     end
 
 
