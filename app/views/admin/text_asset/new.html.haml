@@ -1,0 +1,6 @@
+- render_region :main do |main|
+  - main.edit_header do
+    %h1== New #{model_name}
+  - main.edit_form do
+    - form_for [:admin, model], :url => { :action => :create } do |f|
+      = render :partial => 'form', :locals => { :f => f}

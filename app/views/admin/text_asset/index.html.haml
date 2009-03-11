@@ -20,43 +20,43 @@
       $('upload_file').disabled = false;
     }
     
-- if model_name == 'stylesheet'
+- if model_name == 'Stylesheet'
   %h1 Stylesheets
   %p Cascading Stylesheets (CSS files) can be used to alter the look &amp; feel of your pages, layouts, and/or snippets.
-- elsif model_name == 'javascript'
+- elsif model_name == 'Javascript'
   %h1 Javascripts
   %p Javascripts add dynamic behaviors that can be used within your pages, layouts, and/or snippets.
 
-%table.index{:id => model_name, :cellspacing => 0, :border => 0, :cellpadding => 0}
+%table.index{:id => model_symbol, :cellspacing => 0, :border => 0, :cellpadding => 0}
   %thead
     %tr
-      %th{:class => model_name}
-        = proper_model_name
+      %th{:class => model_symbol}
+        = plural_model_name
       %th.modify Modify
   %tbody
-    - unless @text_assets.empty?
-      - @text_assets.each do |text_asset|
+    - unless models.empty?
+      - models.each do |text_asset|
         %tr.node.level-1
           -# this next class is dumb but Radiant hard coded for the Snippet class so we'll just piggyback on that...
           %td.snippet 
             = image(model_name, :alt => "#{model_name}-icon", :title => text_asset.url)
-            %span= link_to(text_asset.name, send("#{model_name}_edit_url", :id => text_asset), :title => text_asset.url)
+            %span= link_to(text_asset.name, send("edit_admin_#{model_symbol}_path", :id => text_asset), :title => text_asset.url)
           %td.remove
-            = link_to image('remove', :alt => "Remove #{proper_model_name}"), send("#{model_name}_remove_url", :id => text_asset)
+            = link_to image('remove', :alt => "Remove #{model_name}"), send("remove_admin_#{model_symbol}_path", :id => text_asset)
     - else
       %tr
-        %td.note{:colspan => 2}== No #{proper_model_name.pluralize}
+        %td.note{:colspan => 2}== No #{plural_model_name}
 
 %p
-  = link_to(image("new-#{model_name}", :alt => "New #{proper_model_name}"), send("#{model_name}_new_url"))
+  = link_to(image("new-#{model_name}", :alt => "New #{model_name}"), send("new_admin_#{model_symbol}_path"))
   &nbsp;&nbsp;
-  = link_to image("upload-#{model_name}", :alt => "Upload #{proper_model_name}"), "#", :onclick => "toggle_upload_popup(); return false;"
+  = link_to image("upload-#{model_name}", :alt => "Upload #{model_name}"), "#", :onclick => "toggle_upload_popup(); return false;"
 
 - content_for 'popups' do
   .popup#upload-popup{:style => 'display:none;width:20em'}
     #busy.busy{:style => "display: none"}= image 'spinner.gif'
-    %h3== Upload #{proper_model_name}
-    - form_for :upload, :url => send("#{model_name}_upload_url"),:html => { :multipart => true, :target => 'upload_frame', :onsubmit => 'uploadInProgress();' } do |f|
+    %h3== Upload #{model_name}
+    - form_for :upload, :url => send("upload_admin_#{model_symbol}_path"),:html => { :multipart => true, :target => 'upload_frame', :onsubmit => 'uploadInProgress();' } do |f|
       %p
         %label{:for => 'upload_file'}== Select a #{model_name} file:
       %p= f.file_field :file
@@ -66,6 +66,6 @@
   .popup#upload-errors-popup{:style => 'display:none'}
     %h3== Upload Errors
     %p The file upload experinced the following errors:
-    %div{:id => "errors_for_#{model_name}"}
+    %div{:id => "errors_for_#{model_symbol}"}
     %p= link_to_function 'Close', "Element.hide('upload-errors-popup')", :class => 'close-link'
     

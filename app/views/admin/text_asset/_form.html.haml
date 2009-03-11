@@ -1,0 +1,31 @@
+= f.hidden_field 'lock_version'
+= render_region :form_top
+.form-area
+  - render_region :form do |form|
+    - form.edit_title do
+      %p.title
+        %label{:for=>"#{model_symbol}_name"} Name
+        = f.text_field "name", :class => 'textbox', :maxlength => 100
+    - form.edit_content do
+      %p.content
+        %label{:for=>"#{model_symbol}_content"} Body
+        ~ f.text_area "content", :class => "textarea", :style => "width: 100%"
+      .row
+        - render_region :content_bottom do |content_bottom|
+          - content_bottom.edit_filter do
+            - unless (model_name + "Filter").constantize.descendants.empty?
+              %p
+                %label{:for=>"#{model_symbol}_filter"} Filter
+                = select_tag "#{model_symbol}[filter_id]", options_for_select([['<none>', '']] + (model_name + "Filter").constantize.descendants.map { |f| f.filter_name }.sort, model.filter_id), :id => "#{model_symbol}_filter"
+    - form.edit_timestamp do
+      = updated_stamp model
+
+= javascript_tag %{$("#{model_symbol}_name").activate()}
+
+- render_region :form_bottom do |form_bottom|
+  - form_bottom.edit_buttons do
+    %p.buttons
+      = save_model_button(model)
+      = save_model_and_continue_editing_button(model)
+      or
+      = link_to 'Cancel', send("admin_#{model_symbol}_index_path")

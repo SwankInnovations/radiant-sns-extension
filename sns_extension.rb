@@ -16,33 +16,23 @@ class SnsExtension < Radiant::Extension
 
 
   define_routes do |map|
-    # Admin stylesheet Routes
-    map.with_options(:controller => 'admin/text_asset', :asset_type => 'stylesheet') do |controller|
-      controller.stylesheet_index   'admin/css',              :action => 'index'
-      controller.stylesheet_edit    'admin/css/edit/:id',     :action => 'edit'
-      controller.stylesheet_new     'admin/css/new',          :action => 'new'
-      controller.stylesheet_remove  'admin/css/remove/:id',   :action => 'remove'
-      controller.stylesheet_upload  'admin/css/upload',       :action => 'upload'
-    end
-
-    # Admin javascript Routes
-    map.with_options(:controller => 'admin/text_asset', :asset_type => 'javascript') do |controller|
-      controller.javascript_index   'admin/js',               :action => 'index'
-      controller.javascript_edit    'admin/js/edit/:id',      :action => 'edit'
-      controller.javascript_new     'admin/js/new',           :action => 'new'
-      controller.javascript_remove  'admin/js/remove/:id',    :action => 'remove'
-      controller.javascript_upload  'admin/js/upload',        :action => 'upload'
+    map.namespace :admin,
+                  :controller => 'text_asset',
+                  :member => { :remove => :get },
+                  :collection => { :upload => :post } do |admin|
+      
+      admin.resources :stylesheet, :as => 'css', :requirements => { :asset_type => 'stylesheet'}
+      admin.resources :javascript, :as => 'js', :requirements => { :asset_type => 'javascript' }
     end
   end
 
 
   def activate
     begin
-      # FileSystem::MODELS << "Javascript" << "Stylesheet"
-      # FileSystem::MODELS << "TextAsset"
       FileSystem::MODELS << "TextAsset" << "Javascript" << "Stylesheet"
     rescue NameError, LoadError
     end
+
     admin.tabs.add "CSS", "/admin/css", :after => "Layouts", :visibility => [:admin, :developer]
     admin.tabs.add "JS", "/admin/js", :after => "CSS", :visibility => [:admin, :developer]
 
@@ -54,7 +44,6 @@ class SnsExtension < Radiant::Extension
       attr_accessor :text_asset
     end
     admin.text_asset = load_default_text_asset_regions
-
 
     # Add Javascript and Stylesheet to UserActionObserver (used for created_by and updated_by)
     observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript]
@@ -82,6 +71,7 @@ class SnsExtension < Radiant::Extension
           edit.content_bottom.concat %w{edit_filter}
           edit.form_bottom.concat %w{edit_buttons}
         end
+        text_asset.new = text_asset.edit
       end
     end
 end
