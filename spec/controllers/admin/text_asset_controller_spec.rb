@@ -40,18 +40,18 @@ require File.dirname(__FILE__) + '/../../spec_helper'
     end
 
 
-    it "should be an AbstractModelController" do
-      controller.should be_kind_of(Admin::AbstractModelController)
+    it "should be an ResourceController" do
+      controller.should be_kind_of(Admin::ResourceController)
     end
 
 
 
-    # The :upload action is an addtion to the AbstractModelController
+    # The :upload action is an addtion to the ResourceController
     [:index, :new, :edit, :remove, :upload].each do |action|
 
       describe "#{action} action" do
 
-        # Different than the AbstractModelController, ours initializes the model
+        # Different than the ResourceController, ours initializes the model
         # class just prior to each action.  So it gets spec'ed for each action.
         it "should handle #{current_asset[:name].titlecase.pluralize}" do
           controller.class.model_class.should == current_asset[:class]
