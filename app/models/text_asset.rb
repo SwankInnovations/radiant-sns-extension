@@ -9,7 +9,7 @@ class TextAsset < ActiveRecord::Base
   has_one :dependency, :class_name => 'TextAssetDependency', :dependent => :destroy
 
   validates_presence_of :name, :message => 'required'
-  validates_length_of :name, :maximum => 100, :message => '%d-character limit'
+  validates_length_of :name, :maximum => 100, :message => '{{count}}-character limit'
   validates_uniqueness_of :name, :scope => :class_name, :message => "name already in use"
   # the following regexp uses \A and \Z rather than ^ and $ to enforce no "\n" characters
   validates_format_of :name, :with => %r{\A[-_.A-Za-z0-9]*\Z}, :message => 'invalid format'
