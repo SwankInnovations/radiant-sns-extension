@@ -72,7 +72,7 @@ class Admin::TextAssetController < Admin::ResourceController
     # to the action methods).  So we'll process 'em as part of a before_filter
 
     def set_model
-      self.class.model_class params[:asset_type].camelize.constantize
+      self.class.instance_variable_set "@model_class", params[:asset_type].camelize.constantize
     end
 
 end
