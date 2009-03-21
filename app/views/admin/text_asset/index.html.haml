@@ -19,13 +19,17 @@
       $('upload_button').disabled = false;
       $('upload_file').disabled = false;
     }
-    
+
 - if model_name == 'Stylesheet'
   %h1 Stylesheets
-  %p Cascading Stylesheets (CSS files) can be used to alter the look &amp; feel of your pages, layouts, and/or snippets.
+  - render_region :top do |top|
+    - top.help_text do
+      %p Cascading Stylesheets (CSS files) can be used to alter the look &amp; feel of your pages, layouts, and/or snippets.
 - elsif model_name == 'Javascript'
   %h1 Javascripts
-  %p Javascripts add dynamic behaviors that can be used within your pages, layouts, and/or snippets.
+  - render_region :top do |top|
+    - top.help_text do
+      %p Javascripts add dynamic behaviors that can be used within your pages, layouts, and/or snippets.
 
 %table.index{:id => model_symbol, :cellspacing => 0, :border => 0, :cellpadding => 0}
   %thead

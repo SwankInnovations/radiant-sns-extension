@@ -65,6 +65,9 @@ class SnsExtension < Radiant::Extension
     # into its views).
     def load_default_text_asset_regions
       returning OpenStruct.new do |text_asset|
+        text_asset.index = Radiant::AdminUI::RegionSet.new do |index|
+          index.top.concat %w{help_text}
+        end
         text_asset.edit = Radiant::AdminUI::RegionSet.new do |edit|
           edit.main.concat %w{edit_header edit_form}
           edit.form.concat %w{edit_title edit_content edit_timestamp}
