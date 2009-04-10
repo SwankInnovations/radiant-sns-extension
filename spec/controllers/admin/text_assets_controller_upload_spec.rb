@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-# These specs define the upload behavior of TextAssetController (which behaves
+# These specs define the upload behavior of TextAssetsController (which behaves
 # as both a StylesheetController and JavascriptController).
 #
 # Since these behaviors are a departure from AbstractController and also involve
@@ -17,7 +17,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 ].each do |current_asset|
 
-  describe "For #{current_asset[:name].pluralize}, the", Admin::TextAssetController do
+  describe "For #{current_asset[:name].pluralize}, the", Admin::TextAssetsController do
 
     integrate_views
     dataset :users
@@ -241,7 +241,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
           it "should redirect the parent window to the index page" do
-            url = send("#{current_asset[:name]}_index_url", :only_path => true)
+            url = send("admin_#{current_asset[:name]}s_url", :only_path => true)
             js_regexp = %r{window.location.href = ['"][^'"]*#{url}['"][;]}
             assert_select_parent { |script|
               script.should match(js_regexp)

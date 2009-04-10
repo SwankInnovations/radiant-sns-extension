@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-# These specs set the behavior of TextAssetController (which behaves as both a
+# These specs set the behavior of TextAssetsController (which behaves as both a
 # StylesheetController and JavascriptController).
 #
 # Many of these specs are adaptations of the AbstractController Specs.  Should
@@ -21,7 +21,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 ].each do |current_asset|
 
-  describe "For #{current_asset[:name].pluralize}, the", Admin::TextAssetController do
+  describe "For #{current_asset[:name].pluralize}, the", Admin::TextAssetsController do
 
     integrate_views
 
@@ -36,7 +36,6 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
     before :each do
       login_as :developer
-      #@cache = @controller.cache = FakeResponseCache.new
     end
 
 
@@ -54,20 +53,21 @@ require File.dirname(__FILE__) + '/../../spec_helper'
         # Different than the ResourceController, ours initializes the model
         # class just prior to each action.  So it gets spec'ed for each action.
         it "should handle #{current_asset[:name].titlecase.pluralize}" do
+          get action, :asset_type => current_asset[:name], :id => text_asset_id(:main)
           controller.class.model_class.should == current_asset[:class]
         end
 
 
         it "should require login to access" do
           logout
-          lambda { get action, :asset_type => current_asset[:name] }.
+          lambda { get action, :asset_type => current_asset[:name], :id => text_asset_id(:main) }.
               should require_login
         end
 
 
         it "should allow access to developers" do
           lambda { get action,
-                   :id => text_asset_id('main'),
+                   :id => text_asset_id(:main),
                    :asset_type => current_asset[:name] }.
               should restrict_access(:allow => [users(:developer)])
         end
@@ -75,14 +75,14 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
         it "should allow access to admins" do
           lambda { get action,
-                   :id => text_asset_id('main'),
+                   :id => text_asset_id(:main),
                    :asset_type => current_asset[:name]}.
               should restrict_access(:allow => [users(:admin)])
         end
 
 
         it "should deny non-developers and non-admins" do
-          lambda { get action, :asset_type => current_asset[:name] }.
+          lambda { get action, :asset_type => current_asset[:name], :id => text_asset_id(:main) }.
               should restrict_access(:deny => [users(:non_admin),
                                                users(:existing)])
         end
@@ -107,13 +107,13 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
       it "should render the index template" do
-        response.should render_template("admin/text_asset/index")
+        response.should render_template("admin/text_assets/index")
       end
 
 
       it "should load an array of models" do
-        assigns[:text_assets].should be_kind_of(Array)
-        assigns[:text_assets].all? { |i| i.kind_of?(current_asset[:class]) }.should be_true
+        controller.send(:models).should be_kind_of(Array)
+        controller.send(:models).all? { |i| i.kind_of?(current_asset[:class]) }.should be_true
       end
 
     end
@@ -133,27 +133,28 @@ require File.dirname(__FILE__) + '/../../spec_helper'
         end
 
 
-        it "should render the edit template" do
-          response.should render_template("admin/text_asset/edit")
+        it "should render the new template" do
+          response.should render_template("admin/text_assets/new")
         end
 
 
         it "should load a new #{current_asset[:name]}" do
-          assigns[:text_asset].should_not be_nil
-          assigns[:text_asset].should be_kind_of(current_asset[:class])
-          assigns[:text_asset].should be_new_record
+          controller.send(:model).should_not be_nil
+          controller.send(:model).should be_kind_of(current_asset[:class])
+          controller.send(:model).should be_new_record
         end
       end
 
+    end
 
-
+    describe "create action" do
 
       describe "via POST" do
 
         describe "when the #{current_asset[:name]} validates" do
 
           before :each do
-            post :new,
+            post :create,
                  current_asset[:symbol] => send("#{current_asset[:name]}_params"),
                  :asset_type => current_asset[:name]
             @text_asset = current_asset[:class].find_by_name('Test')
@@ -162,12 +163,12 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
           it "should redirect to the index" do
             response.should be_redirect
-            response.should redirect_to(send("#{current_asset[:name]}_index_url"))
+            response.should redirect_to(send("admin_#{current_asset[:name]}s_url"))
           end
 
 
           it "should create the #{current_asset[:name]}" do
-            assigns[:text_asset].should_not be_new_record
+            controller.send(:model).should_not be_new_record
           end
 
 
@@ -184,7 +185,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
         describe "when the #{current_asset[:name]} fails validation" do
 
           before :each do
-            post :new,
+            post :create,
                  current_asset[:symbol] => send("#{current_asset[:name]}_params",
                                                   :name => nil),
                  :asset_type => current_asset[:name]
@@ -193,12 +194,12 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
           it "should render the edit template" do
-            response.should render_template("admin/text_asset/edit")
+            response.should render_template("admin/text_assets/new")
           end
 
 
           it "should not create the #{current_asset[:name]}" do
-            assigns[:text_asset].should be_new_record
+            controller.send(:model).should be_new_record
           end
 
 
@@ -215,7 +216,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
         describe "when 'Save and Continue Editing' was clicked" do
 
           before :each do
-            post :new,
+            post :create,
                  current_asset[:symbol] => send("#{current_asset[:name]}_params",
                                                       :name => 'Test'),
                  :continue => 'Save and Continue Editing',
@@ -226,7 +227,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
           it "should redirect to the edit action" do
             response.should be_redirect
-            response.should redirect_to(send("#{current_asset[:name]}_edit_url", :id => @text_asset))
+            response.should redirect_to(send("edit_admin_#{current_asset[:name]}_url", :id => @text_asset))
           end
         end
 
@@ -243,7 +244,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
         before :each do
           get :edit,
-              :id => text_asset_id('main'),
+              :id => text_asset_id(:main),
               :asset_type => current_asset[:name]
         end
 
@@ -254,27 +255,28 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
         it "should render the edit template" do
-          response.should render_template("admin/text_asset/edit")
+          response.should render_template("admin/text_assets/edit")
         end
 
 
         it "should load the existing #{current_asset[:name]}" do
-          assigns[:text_asset].should_not be_nil
-          assigns[:text_asset].should be_kind_of(current_asset[:class])
-          assigns[:text_asset].should == text_assets('main')
+          controller.send(:model).should_not be_nil
+          controller.send(:model).should be_kind_of(current_asset[:class])
+          controller.send(:model).should == text_assets(:main)
         end
       end
 
+    end
 
-
+    describe "update action" do
 
       describe "via POST" do
 
         describe "when the #{current_asset[:name]} validates" do
 
           before :each do
-            post :edit,
-                 :id => text_asset_id('main'),
+            post :update,
+                 :id => text_asset_id(:main),
                  current_asset[:symbol] => send("#{current_asset[:name]}_params"),
                  :asset_type => current_asset[:name]
           end
@@ -282,23 +284,18 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
           it "should redirect to the index" do
             response.should be_redirect
-            response.should redirect_to(send("#{current_asset[:name]}_index_url"))
+            response.should redirect_to(send("admin_#{current_asset[:name]}s_url"))
           end
 
 
           it "should save the #{current_asset[:name]}" do
-            assigns[:text_asset].should be_valid
+            controller.send(:model).should be_valid
           end
 
 
           it "should add a flash notice" do
             flash[:notice].should_not be_nil
             flash[:notice].should =~ /saved/
-          end
-
-
-          it "should clear the TextAssetResponseCache" do
-            @cache.should be_cleared
           end
 
         end
@@ -309,8 +306,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
         describe "when the #{current_asset[:name]} fails validation" do
 
           before :each do
-            post :edit,
-                 :id => text_asset_id('main'),
+            post :update,
+                 :id => text_asset_id(:main),
                  current_asset[:symbol] => send("#{current_asset[:name]}_params",
                                                       :name => nil),
                  :asset_type => current_asset[:name]
@@ -318,23 +315,18 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
           it "should render the edit template" do
-            response.should render_template("admin/text_asset/edit")
+            response.should render_template("admin/text_assets/edit")
           end
 
 
           it "should not save the #{current_asset[:name]}" do
-            assigns[:text_asset].should_not be_valid
+            controller.send(:model).should_not be_valid
           end
 
 
           it "should add a flash error" do
             flash[:error].should_not be_nil
             flash[:error].should =~ /error/
-          end
-
-
-          it "should not clear the TextAssetResponseCache" do
-            @cache.should_not be_cleared
           end
 
         end
@@ -345,8 +337,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
         describe "when 'Save and Continue Editing' was clicked" do
 
           before :each do
-            post :edit,
-                 :id => text_asset_id('main'),
+            post :update,
+                 :id => text_asset_id(:main),
                  current_asset[:symbol] => send("#{current_asset[:name]}_params"),
                  :continue => 'Save and Continue Editing',
                  :asset_type => current_asset[:name]
@@ -355,13 +347,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
           it "should redirect to the edit action" do
             response.should be_redirect
-            response.should redirect_to(send("#{current_asset[:name]}_edit_url",
-                                             :id => text_asset_id('main')))
-          end
-
-
-          it "should clear the TextAssetResponseCache" do
-            @cache.should be_cleared
+            response.should redirect_to(send("edit_admin_#{current_asset[:name]}_url",
+                                             :id => text_asset_id(:main)))
           end
 
         end
@@ -379,7 +366,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
         before :each do
           get :remove,
-              :id => text_asset_id('main'),
+              :id => text_asset_id(:main),
               :asset_type => current_asset[:name]
         end
 
@@ -390,47 +377,12 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
         it "should render the remove template" do
-          response.should render_template("admin/text_asset/remove")
+          response.should render_template("admin/text_assets/remove")
         end
 
 
         it "should load the specified #{current_asset[:name]}" do
-           assigns[:text_asset].should == text_assets('main')
-        end
-
-      end
-
-
-
-
-      describe "via POST" do
-
-        before :each do
-          post :remove,
-               :id => text_asset_id('main'),
-               :asset_type => current_asset[:name]
-        end
-
-
-        it "should destroy the #{current_asset[:name]}" do
-          current_asset[:class].find_by_name('main').should be_nil
-        end
-
-
-        it "should redirect to the index action" do
-          response.should be_redirect
-          response.should redirect_to(send("#{current_asset[:name]}_index_url"))
-        end
-
-
-        it "should add a flash notice" do
-          flash[:notice].should_not be_nil
-          flash[:notice].should =~ /deleted/
-        end
-
-
-        it "should clear the TextAssetResponseCache" do
-          @cache.should be_cleared
+           controller.send(:model).should == text_assets(:main)
         end
 
       end

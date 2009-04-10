@@ -17,4 +17,4 @@
   %p.buttons
     %input.button{:type=>"submit", :value=>"Delete #{model_name}"}/
     or
-    = link_to('Cancel', send("admin_#{model_symbol}_index_path"))
+    = link_to('Cancel', send("admin_#{model_symbol}s_path"))

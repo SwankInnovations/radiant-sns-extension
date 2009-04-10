@@ -36,5 +36,6 @@ end
 
 def save_asset_at(text_asset, year)
   Time.stub!(:now).and_return(Time.utc(year))
+  text_asset.updated_at = Time.now # make an attribute "dirty" to force a save
   text_asset.save!
 end

@@ -60,7 +60,7 @@
   .popup#upload-popup{:style => 'display:none;width:20em'}
     #busy.busy{:style => "display: none"}= image 'spinner.gif'
     %h3== Upload #{model_name}
-    - form_for :upload, :url => send("upload_admin_#{model_symbol}_path"),:html => { :multipart => true, :target => 'upload_frame', :onsubmit => 'uploadInProgress();' } do |f|
+    - form_for :upload, :url => send("upload_admin_#{model_symbol}s_path"),:html => { :multipart => true, :target => 'upload_frame', :onsubmit => 'uploadInProgress();' } do |f|
       %p
         %label{:for => 'upload_file'}== Select a #{model_name} file:
       %p= f.file_field :file

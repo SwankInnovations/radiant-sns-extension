@@ -17,12 +17,12 @@ class SnsExtension < Radiant::Extension
 
   define_routes do |map|
     map.namespace :admin,
-                  :controller => 'text_asset',
+                  :controller => 'text_assets',
                   :member => { :remove => :get },
                   :collection => { :upload => :post } do |admin|
       
-      admin.resources :stylesheet, :as => 'css', :requirements => { :asset_type => 'stylesheet'}
-      admin.resources :javascript, :as => 'js', :requirements => { :asset_type => 'javascript' }
+      admin.resources :stylesheets, :as => 'css', :requirements => { :asset_type => 'stylesheet'}
+      admin.resources :javascripts, :as => 'js', :requirements => { :asset_type => 'javascript' }
     end
   end
 
@@ -41,9 +41,9 @@ class SnsExtension < Radiant::Extension
     SiteController.send :include, Sns::SiteControllerExt
 
     Radiant::AdminUI.class_eval do
-      attr_accessor :text_asset
+      attr_accessor :text_assets
     end
-    admin.text_asset = load_default_text_asset_regions
+    admin.text_assets = load_default_text_assets_regions
 
     # Add Javascript and Stylesheet to UserActionObserver (used for created_by and updated_by)
     observables = UserActionObserver.instance.observed_classes | [Stylesheet, Javascript]
@@ -63,7 +63,7 @@ class SnsExtension < Radiant::Extension
 
     # Defines this extension's default regions (so that we can incorporate shards
     # into its views).
-    def load_default_text_asset_regions
+    def load_default_text_assets_regions
       returning OpenStruct.new do |text_asset|
         text_asset.index = Radiant::AdminUI::RegionSet.new do |index|
           index.top.concat %w{help_text}

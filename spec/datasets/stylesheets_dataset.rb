@@ -23,20 +23,15 @@ class StylesheetsDataset < Dataset::Base
       }.merge(attributes)
     end
 
-
-    # the built-in scenario helper methods only deal with the root class (i.e.
-    # the one with the table -- text_asset).  So we just build our own versions.
-    #
-    # NOTE: There must be no symbolic naming conflics between child classes (so
-    # the Stylesheets scenario and Javascripts scenario can't both have a :main
-    # That's ok since we're using :main_css and :main_js naming rules here.
-    def stylesheets(symbolic_name)
-      text_assets(symbolic_name)
+    # Generic dataset lookup methods so we can write one spec example that handles both javascripts and
+    # stylesheets.  JavascriptsDataset defines these differently.  Don't load both datasets at once.
+    def text_assets(symbolic_name)
+      stylesheets(symbolic_name)
     end
 
 
-    def stylesheet_id(symbolic_name)
-      text_asset_id(symbolic_name)
+    def text_asset_id(symbolic_name)
+      stylesheet_id(symbolic_name)
     end
 
 
