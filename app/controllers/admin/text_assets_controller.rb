@@ -6,12 +6,6 @@ class Admin::TextAssetsController < Admin::ResourceController
     :denied_message => 'You must have developer or administrator privileges to perform this action.'
 
   prepend_before_filter :set_model
-  
-  def initialize()
-    super
-    # overwrite @cache from super with our special cache
-    @cache = TextAssetResponseCache.instance
-  end
 
   def upload
     if !request.post?  # not a POST request

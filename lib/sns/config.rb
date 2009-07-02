@@ -6,7 +6,8 @@ module Sns
     @defaults = { 'stylesheet_directory' => 'css',
                   'javascript_directory' => 'js',
                   'stylesheet_mime_type' => 'text/css',
-                  'javascript_mime_type' => 'text/javascript'
+                  'javascript_mime_type' => 'text/javascript',
+                  'cache_timeout'        => 10.minutes
                 }
 
     @@live_config = {}
@@ -43,13 +44,14 @@ module Sns
         key = key.to_s
 
         case key
+          # TODO: Remove directory config entry since Rack cache does not use it.
           when /_directory$/
             value = validate_directory(value, key)
             @@live_config[key] = Radiant::Config["SnS.#{key}"] = value
           when /_mime_type$/
             validate_mime_type(value, key)
             @@live_config[key] = Radiant::Config["SnS.#{key}"] = value
-            TextAssetResponseCache.instance.clear
+            Radiant::Cache.clear
         end
       end
 

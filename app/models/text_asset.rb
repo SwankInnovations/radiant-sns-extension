@@ -1,7 +1,7 @@
 class TextAsset < ActiveRecord::Base
   set_inheritance_column :class_name
 
-  order_by 'name'
+  default_scope :order => "name ASC"
 
   # Associations
   belongs_to :created_by, :class_name => 'User'
@@ -63,7 +63,6 @@ class TextAsset < ActiveRecord::Base
       self.dependency.update_attribute('effectively_updated_at', time)
     end
   end
-
 
   # Parses, and filters the current content for output
   def render
