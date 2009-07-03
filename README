@@ -37,12 +37,13 @@ note of, however.
     time -- viola, now Radiant offers asset packaging just like Rails! (And the
     caching mechanism is smart enough to keep track of your file's dependencies)
 
-  * There are 4 settings that can be changed via Rake "config" task (see
+  * There are 5 settings that can be changed via Rake "config" task (see
     Rake radiant:extensions:sns:config --help for usage):
       - stylesheet_directory
       - javascript_directory
       - stylesheet_mime_type
       - javascript_mime_type
+      - cache_timeout
 
 That's it.  Everything else is either too obvious to bother with here or
 automagical and/or too top secret to disclose ;-).

@@ -3,7 +3,7 @@
   # (relative to RAILS_ROOT). The default value is: "text_asset_cache"
   #
   # NOTE: If you change this, don't forget to remove any previous cache folder
-  # TEXT_ASSET_CACHE_DIR = "text_asset_cache"
+  TEXT_ASSET_CACHE_DIR = "text_asset_cache"
 
 require_dependency 'application_controller'
 require 'ostruct'
