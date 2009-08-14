@@ -36,19 +36,13 @@ module Sns
       end
       
       def set_text_asset_cache_control
-        if (request.head? || request.get?)
-          expires_in Sns::Config['cache_timeout'], :public => true, :private => false
-        else
-          expires_in nil, :private => true, "no-cache" => true
-          headers['ETag'] = ''
-        end
+        expires_in Sns::Config['cache_timeout'], :public => true, :private => false
       end
       
       def process_text_asset(text_asset, asset_type)
         response.body = text_asset.render
-        response.headers['Status'] = ActionController::Base::DEFAULT_RENDER_STATUS_CODE
+        response.status = ActionController::Base::DEFAULT_RENDER_STATUS_CODE
         response.headers['Content-Type'] = Sns::Config["#{asset_type}_mime_type"]
-        response.headers['Last-Modified'] = text_asset.effectively_updated_at.httpdate
       end
   end
 end
