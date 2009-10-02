@@ -3,7 +3,7 @@ class AddDependenciesToTextAssets < ActiveRecord::Migration
     if TextAsset.count > 0
       puts "\n                          * * * *  NOTICE  * * * *"
       puts "         This migration used to populate the newly-created dependencies"
-      puts "          table but the previously models have since changed.  So, now"
+      puts "           table but the previous models have since changed.  So, now"
       puts "                    this step only creates the empty table."
       puts "\n                        Normally, this ist a problem..."
       puts "\n        BUT we have detected existing records in your text_assets table"
