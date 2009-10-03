@@ -29,11 +29,6 @@ class SnsExtension < Radiant::Extension
 
 
   def activate
-    begin
-      FileSystem::MODELS << "TextAsset" << "Javascript" << "Stylesheet"
-    rescue NameError, LoadError
-    end
-
     admin.tabs.add "CSS", "/admin/css", :after => "Layouts", :visibility => [:admin, :developer]
     admin.tabs.add "JS", "/admin/js", :after => "CSS", :visibility => [:admin, :developer]
 

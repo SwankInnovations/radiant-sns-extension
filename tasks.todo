@@ -1,2 +1,0 @@
-✓ DRY it up into one module
-✓ test that dependencies function properly when loaded from file_system
