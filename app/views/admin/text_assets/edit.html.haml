@@ -2,5 +2,4 @@
   - main.edit_header do
     %h1== Edit #{model_name}
   - main.edit_form do
-    - form_for [:admin, model] do |f|
-      = render :partial => 'form', :locals => { :f => f }
+    = render :partial => 'form'
