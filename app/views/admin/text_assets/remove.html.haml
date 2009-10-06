@@ -10,7 +10,7 @@
     %tr.node.level-1
       -# this next class is dumb but Radiant hard coded for the Snippet class so we'll just piggyback on that...
       %td.snippet
-        = image(model_symbol, :class => "icon", :alt => "#{model_symbol}-icon", :title => model.url)
+        = image("sns/#{model_symbol}", :class => "icon", :alt => "#{model_symbol}-icon", :title => model.url)
         %span.title= model.name
 
 - form_for [:admin, model], :html => {:method => :delete} do
