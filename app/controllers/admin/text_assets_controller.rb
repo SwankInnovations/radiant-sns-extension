@@ -64,7 +64,6 @@ class Admin::TextAssetsController < Admin::ResourceController
     # since the model name comes from the params, the model_class cannot
     # be set until after initialization (seems like params are only available
     # to the action methods).  So we'll process 'em as part of a before_filter
-
     def set_model
       self.class.instance_variable_set "@model_class", params[:asset_type].camelize.constantize
     end
