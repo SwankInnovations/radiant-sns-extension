@@ -49,8 +49,7 @@ class Admin::TextAssetsController < Admin::ResourceController
   protected
 
     # we CANNOT use the plural as this creates a @stylesheets
-    # instance variable which conflicts with Radiants admin @stylesheets
-
+    # instance variable which conflicts with Radiant's admin @stylesheets
     def models
       instance_variable_get("@#{model_symbol}") || load_models
     end
