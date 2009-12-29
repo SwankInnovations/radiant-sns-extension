@@ -179,61 +179,6 @@ describe SiteController, "(Extended)" do
       end
 
 
-
-
-      describe "with regard to Last-Modified date" do
-
-        before :each do
-          @dependant = current_asset[:class].new(:name => 'dependant')
-          @dependency = current_asset[:class].new(:name => 'dependency')
-          save_asset_at(@dependant, 1990)
-        end
-
-
-        it "should be a string" do
-          get :show_page,
-              :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should be_kind_of(String)
-        end
-
-
-        it "should use a valid HTTP header date format" do
-          get :show_page,
-              :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == "Mon, 01 Jan 1990 00:00:00 GMT"
-        end
-
-
-        it "should reflect the #{current_asset[:name]}'s updated_at date/time if the file has no dependencies" do
-          get :show_page,
-              :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == Time.utc(1990).httpdate
-        end
-
-
-        it "should reflect the #{current_asset[:name]}'s updated_at date/time if its dependencies are older" do
-          @dependant.content = %{<r:#{current_asset[:name]} name="dependency" />}
-          save_asset_at(@dependency, 1991)
-          save_asset_at(@dependant, 1992)
-
-          get :show_page,
-              :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == Time.utc(1992).httpdate
-        end
-
-
-        it "should reflect the #{current_asset[:name]}'s dependency's updated_at date/time if its dependencies are newer" do
-          @dependant.content = %{<r:#{current_asset[:name]} name="dependency" />}
-          save_asset_at(@dependant, 1993)
-          save_asset_at(@dependency, 1994)
-
-          get :show_page,
-              :url => current_asset[:default_directory].split("/") << 'dependant'
-          response.headers['Last-Modified'].should == Time.utc(1994).httpdate
-        end
-
-      end
-
     end
 
   end

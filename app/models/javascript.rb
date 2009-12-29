@@ -1,1 +1,3 @@
-class Javascript < TextAsset; end
+class Javascript < TextAsset
+  include TextAssetStandardTags
+end

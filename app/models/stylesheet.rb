@@ -1,1 +1,3 @@
-class Stylesheet < TextAsset; end
+class Stylesheet < TextAsset
+  include TextAssetStandardTags
+end

@@ -14,7 +14,24 @@ namespace :radiant do
       task :migrate => :environment do
         require 'radiant/extension_migrator'
         if ENV["VERSION"]
-          SnsExtension.migrator.migrate(ENV["VERSION"].to_i)
+          if [2, 3, 4].include? ENV["VERSION"].to_i
+            puts "\n                          * * * *  NOTICE  * * * *"
+            puts "\n    Some of the older functionality of SnS has been removed and as a result"
+            puts "   several of the middle migrations no longer produce their previous results."
+            puts "\n         This isn't an issue when you're just passing through, but you"
+            puts "         can no longer safely stop at migration levels 002-004 anymore."
+            puts "\n                         Your migration will not be run."
+            puts "\n        P.S. If you really must revert to one of these older migrations"
+            puts "        (levels 002-004), you'll first need to down-migrate to level 001,"
+            puts "        then install the older version of SnS and use that to migrate up."
+            puts "\n                    See db\\migrate\\README for more info."
+            puts "\n                          * * * * * *  * * * * * *\n\n"
+            puts "Press any key to acknowledge and cancel this migration(s):"
+            STDIN.gets
+            raise "Invalid Migration Level Error"
+          else
+            SnsExtension.migrator.migrate(ENV["VERSION"].to_i)
+          end
         else
           SnsExtension.migrator.migrate
         end

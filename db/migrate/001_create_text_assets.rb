@@ -1,5 +1,4 @@
 class CreateTextAssets < ActiveRecord::Migration
-
   def self.up
     create_table :text_assets do |t|
       t.string  :class_name, :limit => 25
@@ -24,5 +23,4 @@ class CreateTextAssets < ActiveRecord::Migration
       say "Removed config for #{config_name}"
     end
   end
-
 end
