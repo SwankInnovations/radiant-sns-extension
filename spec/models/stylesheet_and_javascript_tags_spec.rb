@@ -205,7 +205,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
       @text_asset.content = %{<r:#{current_tag[:name]} name="bogus-asset-name" />}
       lambda{@text_asset.render}.should raise_error(
           current_tag[:asset_class]::TagError,
-          "#{current_tag[:name]} with name 'bogus-asset-name' not found"
+          "#{current_tag[:name]} with name `bogus-asset-name' not found"
       )
     end
 
