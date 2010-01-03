@@ -1,3 +1,34 @@
+v0.8.1  This is a first pass at a real cleanup of SnS. Since the adoption of
+        Rack::Cache, many of SnS's performance features have been lost. Instead
+        SnS had been altered to share Radiant's Cache for Pages which auto
+        expires every so often.  This also means the dependency and LAST-
+        MODIFIED tracking been rendered useless.
+        
+        This version cleanly removes all vestiges of dependency tracking. SnS
+        now follows a Radiant-Page like caching scheme with an auto-expire time
+        set to 10 mins.
+        
+        Specs and code have been fixed.  All specs rightly pass again. Yay!
+        
+        * * This version should now be compatible with Radiant 0.7.0 - 0.8.x * *
+        
+
+v0.8.0  This version was never officially released -- but existed rather as a
+        series of patches from the Radiant community.  Among other things, this 
+        brought SnS into RESTful behavior (and thus maintianed its compatibility
+        with Radiant).
+        
+        In addition, there were several bug-fixes and alterations.
+        
+        For their work in keeping SnS going during this time, thanks go out to:
+          * Istvan Hoka
+          * Paul Hoehne
+          * Cristi Duma
+          * Erik Ostrom
+          * Michael Kessler
+          * Sean Cribbs
+
+
 v0.7.1  Renamed the rake task from update_dependencies to rebuild_dependencies.
 
 

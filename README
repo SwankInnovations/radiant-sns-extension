@@ -60,11 +60,6 @@ There are a number of interesting benefits gained by this approach:
 
   * CSS and JS files now get designer-level permissions -- not user-level.
 
-  * These files are now cached differently.  Rather than the 5-minute expiration
-    on pages, these files can now report to the browser the true LAST-MODIFIED
-    date so we don't have to serve up these files constantly.  We can put the
-    user's browser caching to work.
-
   * This properly separates the concerns of Pages and Text Assets. (I mean, do 
     javascripts really need a layout or stylesheets a breadcrumb?).  Easier to 
     understand for the user and easier to develop for.
@@ -111,11 +106,7 @@ There are a number of interesting benefits gained by this approach:
 
 
 == TO-DO
-Figure out what the core team needs to get this puppy baked into Radiant!
-
 Add a mechanism to eliminate (or at least reduce) the possibility of circular
 references with <r:stylesheet> or <r:javascript> tags.
 
-Improve the file uploading: Do we need to confirm that it's a text file?  Do we
-need to mess with handling different text encoding?  Do we want to allow
-multiple file uploads?
+Do we want to allow multiple file uploads?
