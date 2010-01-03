@@ -17,12 +17,8 @@ class RenameConfigKeysAndAddFilterId < ActiveRecord::Migration
     if old_cache_config = Radiant::Config.find_by_key('response_cache_directory')
       if old_cache_config.value != TEXT_ASSET_CACHE_DIR
         puts "\n                          * * * *  NOTICE  * * * *"
-        puts "    The Styles 'n Scripts extension has changed the way its cache directory"
-        puts "    is set and the previous setting cannot be migrated.  It can now be set"
-        puts "       using TEXT_ASSET_CACHE_DIR (found inside the: sns_extension.rb)."
-        puts %{\n       Your previous setting was:   "#{old_cache_config.value}"}
-        puts %{       The new value is currently:  "#{TEXT_ASSET_CACHE_DIR}"}
-        puts "\n    If you want to use your old value again, go change TEXT_ASSET_CACHE_DIR"
+        puts "         Styles 'n Scripts no longer has a settable cache directory"
+        puts "          your existing setting cannot be used and will be deleted"
         puts "\n                          * * * * * *  * * * * * *\n\n"
         Radiant::Config.delete(old_cache_config.id)
         say 'Removed old setting for "response_cache_directory"'
@@ -42,10 +38,6 @@ class RenameConfigKeysAndAddFilterId < ActiveRecord::Migration
     ].each do |keys|
       rename_key(keys[:old], keys[:new])
     end
-
-    Radiant::Config['response_cache_directory'] = TEXT_ASSET_CACHE_DIR.gsub(/^\/+/, '').gsub(/\/+$/, '')
-    say 'Copied value from TEXT_ASSET_CACHE_DIR into "response_cache_directory"'
-
   end
 
 

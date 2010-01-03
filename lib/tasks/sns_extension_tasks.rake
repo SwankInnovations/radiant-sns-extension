@@ -111,9 +111,6 @@ namespace :radiant do
           puts "    js_mime            Sets the server's javascript_mime_type"
           puts "    reset_all          Restores all settings to the factory original"
           puts
-          puts "The current value for TEXT_ASSET_CACHE_DIR is displayed here for your"
-          puts "convenience but it cannot be changed. If you must change it, you can"
-          puts "via the sns_extension.rb file. Doing so requires restarting Radiant."
 
         else
           # iterate through each argument and verify each is well-formed
@@ -149,7 +146,6 @@ namespace :radiant do
         Sns::Config.to_hash.to_a.sort_by { |pair| pair[0] }.each do |pair|
           puts %{    #{pair[0].to_s.ljust(24)} "#{pair[1].to_s}"}
         end
-        puts %{\n    TEXT_ASSET_CACHE_DIR     "#{TEXT_ASSET_CACHE_DIR}"}
       end
 
     end
