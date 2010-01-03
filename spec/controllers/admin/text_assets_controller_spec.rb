@@ -204,9 +204,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
           it "should add a flash error" do
-            pending "flash.now does not get picked up in specs"
-            flash[:error].should_not be_nil
-            flash[:error].should =~ /error/
+            response.flash[:error].should_not be_nil
+            response.flash[:error].should =~ /error/
           end
 
         end
@@ -326,9 +325,8 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 
           it "should add a flash error" do
-            pending "flash.now does not get picked up in specs"
-            flash[:error].should_not be_nil
-            flash[:error].should =~ /error/
+            response.flash[:error].should_not be_nil
+            response.flash[:error].should =~ /error/
           end
 
         end
