@@ -1,3 +1,6 @@
+v0.8.2  Stupidity Bug - I forgot to update the version number in the extension
+        for v0.8.1 (showed up as v0.8.0).
+
 v0.8.1  This is a first pass at a real cleanup of SnS. Since the adoption of
         Rack::Cache, many of SnS's performance features have been lost. Instead
         SnS had been altered to share Radiant's Cache for Pages which auto

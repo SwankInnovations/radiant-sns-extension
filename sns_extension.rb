@@ -3,7 +3,7 @@ require 'ostruct'
 
 
 class SnsExtension < Radiant::Extension
-  version "0.8.0"
+  version "0.8.2"
   extension_name "Styles 'n Scripts"
   description "Adds CSS and JS file management to Radiant"
   url "http://github.com/radiant/radiant-sns-extension"
