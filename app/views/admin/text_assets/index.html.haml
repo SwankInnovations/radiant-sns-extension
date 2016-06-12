@@ -2,7 +2,7 @@
   :plain
     function toggle_upload_popup() {
       var popup = $('upload-popup');
-      center(popup);
+      Element.centerInViewport(popup);
       Element.toggle(popup);
     }
     function uploadInProgress() {
@@ -12,7 +12,7 @@
     }
     function showErrorsPopup() {
       var popup = $('upload-errors-popup');
-      center(popup);
+      Element.centerInViewport(popup);
       popup.show();
       $('upload-popup').hide();
       $('busy').hide();
@@ -46,7 +46,7 @@
             = image("sns/#{model_symbol}", :alt => "#{model_name}-icon", :title => text_asset.url)
             %span= link_to(text_asset.name, send("edit_admin_#{model_symbol}_path", :id => text_asset), :title => text_asset.url)
           %td.remove
-            = link_to image('remove', :alt => "Remove #{model_name}"), send("remove_admin_#{model_symbol}_path", :id => text_asset)
+            = link_to t('remove'), send("remove_admin_#{model_symbol}_path", :id => text_asset)
     - else
       %tr
         %td.note{:colspan => 2}== No #{plural_model_name}
